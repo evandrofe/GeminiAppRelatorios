@@ -75,12 +75,14 @@ export const StepReport: React.FC<StepReportProps> = ({
   const totalEngInt = pillars.engajamentoTrafego.reduce((acc, c) => acc + c.eng, 0);
   const custoMedioConv = totalEngConv > 0 ? totalEngGasto / totalEngConv : 0;
   const cpcMedioEng = totalEngLinks > 0 ? totalEngGasto / totalEngLinks : 0;
+  const custoMedioIntEng = totalEngInt > 0 ? totalEngGasto / totalEngInt : 0;
 
   const totalReelsGasto = pillars.reels.reduce((acc, c) => acc + c.spent, 0);
   const totalReelsInvestimento = pillars.reels.reduce((acc, c) => acc + c.budget, 0);
   const totalReelsAlcance = pillars.reels.reduce((acc, c) => acc + c.reach, 0);
   const totalReelsViews = pillars.reels.reduce((acc, c) => acc + c.views, 0);
   const totalReelsConv = pillars.reels.reduce((acc, c) => acc + c.conv, 0);
+  const totalReelsLinks = pillars.reels.reduce((acc, c) => acc + c.links, 0);
   const totalReelsInt = pillars.reels.reduce((acc, c) => acc + c.eng, 0);
   const custoMedioView = totalReelsViews > 0 ? totalReelsGasto / totalReelsViews : 0;
 
@@ -397,8 +399,21 @@ export const StepReport: React.FC<StepReportProps> = ({
             )}
           </div>
 
+          {/* Notice Banner */}
+          <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3.5 flex items-center justify-between text-xs text-amber-200 no-print">
+            <div className="flex items-center gap-2.5">
+              <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>
+                <strong>17 Colunas Originais Preservadas:</strong> Todas as 17 colunas da planilha oficial (de <em>Nome da Ação</em> até <em>Conversas Iniciadas</em>) estão ativas e visíveis, estruturadas estrategicamente por Pilares (Alcance, Engajamento/WhatsApp e Reels) com destaques, subtotais automáticos e consolidação geral.
+              </span>
+            </div>
+            <span className="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded-full uppercase">
+              17 Colunas Completas
+            </span>
+          </div>
+
           {/* ═══════════════════════════════════════════════════════════════ */}
-          {/* PILAR 1: CAMPANHAS COM OBJETIVO DE ALCANCE */}
+          {/* PILAR 1: CAMPANHAS COM OBJETIVO DE ALCANCE (17 COLUNAS) */}
           {/* ═══════════════════════════════════════════════════════════════ */}
           <div className="bg-white rounded-xl shadow-xl border border-neutral-800 overflow-hidden text-neutral-950 print-avoid-break">
             <div className="bg-gradient-to-r from-blue-700 to-indigo-800 text-white px-5 py-3 flex items-center justify-between">
@@ -408,10 +423,10 @@ export const StepReport: React.FC<StepReportProps> = ({
                 </div>
                 <div>
                   <h3 className="font-extrabold text-sm uppercase tracking-wide">
-                    Campanhas com Objetivo de Alcance (Reconhecimento & Distribuição)
+                    1. Campanhas com Objetivo de Alcance (Reconhecimento & Distribuição)
                   </h3>
                   <p className="text-[11px] text-blue-100/90 font-medium">
-                    Foco em propagação de marca, frequência e alcance massivo de pessoas
+                    Foco em propagação de marca, frequência e alcance massivo de pessoas • 17 Colunas Originais
                   </p>
                 </div>
               </div>
@@ -423,90 +438,90 @@ export const StepReport: React.FC<StepReportProps> = ({
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-[11px] font-sans">
+              <table className="w-full border-collapse text-[10px] font-sans">
                 <thead>
-                  <tr className="bg-neutral-200 text-neutral-900 font-bold uppercase tracking-tight text-[9.5px]">
-                    <th className="py-2.5 px-4 border-r border-b border-neutral-300 text-left min-w-[240px]">
-                      Ação / Criativo
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-center whitespace-nowrap">
-                      Formato
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-center whitespace-nowrap">
-                      Validade
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-right whitespace-nowrap">
-                      Investimento
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-right whitespace-nowrap">
-                      Valor Gasto
-                    </th>
-                    <th className="py-2.5 px-4 border-r border-b border-neutral-300 text-right whitespace-nowrap bg-blue-50/80 text-blue-900">
-                      Pessoas Alcançadas (Alcance)
-                    </th>
-                    <th className="py-2.5 px-4 border-b border-neutral-300 text-right whitespace-nowrap bg-blue-50/80 text-blue-900">
-                      Custo por 1.000 Contas (CPM)
-                    </th>
+                  <tr className="bg-neutral-200 text-neutral-900 font-bold uppercase tracking-tight text-[8.5px]">
+                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-left min-w-[200px]">1. Nome da Ação</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-center whitespace-nowrap">2. Formato</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-center whitespace-nowrap">3. Validade</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">4. Investimento</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">5. Valor Gasto</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap bg-blue-100 text-blue-950 font-black">6. Alcance</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">7. Engajamento</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">8. Cliques Link</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">9. ThruPlay</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap bg-blue-100 text-blue-950 font-black">10. Custo / 1.000</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">11. Custo / Clique</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">12. Custo / ThruPlay</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">13. Custo / Interação</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">14. Custo / Conversa</th>
+                    <th className="py-2.5 px-1.5 border-r border-b border-neutral-300 text-center whitespace-nowrap">15. Filtro</th>
+                    <th className="py-2.5 px-1.5 border-r border-b border-neutral-300 text-center whitespace-nowrap">16. Cidade</th>
+                    <th className="py-2.5 px-2 border-b border-neutral-300 text-right whitespace-nowrap">17. Conversas</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pillars.alcance.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="py-4 text-center text-neutral-500 italic">
+                      <td colSpan={17} className="py-4 text-center text-neutral-500 italic">
                         Nenhuma campanha categorizada exclusivamente como alcance no período.
                       </td>
                     </tr>
                   ) : (
-                    pillars.alcance.map((c) => (
-                      <tr key={c.id} className="hover:bg-blue-50/40 border-b border-neutral-200 transition-colors">
-                        <td className="py-2.5 px-4 border-r border-neutral-200 text-left font-semibold text-neutral-900">
-                          {titleCase(c.displayName || c.name)}
-                          {c.aiNotes && (
-                            <span className="block text-[9.5px] text-blue-700 font-normal mt-0.5 no-print">
-                              {c.aiNotes}
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-center text-neutral-700 whitespace-nowrap">
-                          {c.format}
-                        </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-center text-neutral-600 whitespace-nowrap">
-                          {c.validity || '—'}
-                        </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-right text-neutral-800 whitespace-nowrap font-mono">
-                          {fmtBRL(c.budget)}
-                        </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-right text-neutral-950 font-bold whitespace-nowrap font-mono">
-                          {fmtBRL(c.spent)}
-                        </td>
-                        <td className="py-2.5 px-4 border-r border-neutral-200 text-right font-black text-blue-950 whitespace-nowrap font-mono bg-blue-50/40">
-                          {fmtNum(c.reach)}
-                        </td>
-                        <td className="py-2.5 px-4 text-right font-bold text-blue-800 whitespace-nowrap font-mono bg-blue-50/40">
-                          {fmtBRL(c.cpm)}
-                        </td>
-                      </tr>
-                    ))
+                    pillars.alcance.map((c) => {
+                      const isDuplicateReach = c.reach > 0 && c.eng === c.reach;
+                      const engVal = isDuplicateReach ? '—' : (c.eng > 0 ? fmtNum(c.eng) : '—');
+                      return (
+                        <tr key={c.id} className="hover:bg-blue-50/40 border-b border-neutral-200 transition-colors">
+                          <td className="py-2 px-3 border-r border-neutral-200 text-left font-semibold text-neutral-900">
+                            {titleCase(c.displayName || c.name)}
+                            {c.aiNotes && (
+                              <span className="block text-[8.5px] text-blue-700 font-normal mt-0.5 no-print">
+                                {c.aiNotes}
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-700 whitespace-nowrap">{c.format}</td>
+                          <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-600 whitespace-nowrap">{c.validity || '—'}</td>
+                          <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-800 whitespace-nowrap font-mono">{fmtBRL(c.budget)}</td>
+                          <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-950 font-bold whitespace-nowrap font-mono">{fmtBRL(c.spent)}</td>
+                          <td className="py-2 px-2 border-r border-neutral-200 text-right font-black text-blue-950 whitespace-nowrap font-mono bg-blue-50/60">{fmtNum(c.reach)}</td>
+                          <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{engVal}</td>
+                          <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.links > 0 ? fmtNum(c.links) : '—'}</td>
+                          <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.views > 0 ? fmtNum(c.views) : '—'}</td>
+                          <td className="py-2 px-2 border-r border-neutral-200 text-right font-bold text-blue-900 whitespace-nowrap font-mono bg-blue-50/60">{c.cpm > 0 ? fmtBRL(c.cpm) : '—'}</td>
+                          <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.cpc > 0 ? fmtBRL(c.cpc) : '—'}</td>
+                          <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.cThru > 0 ? fmtBRL(c.cThru) : '—'}</td>
+                          <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.cInt > 0 ? fmtBRL(c.cInt) : '—'}</td>
+                          <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.cConv > 0 ? fmtBRL(c.cConv) : '—'}</td>
+                          <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-500 whitespace-nowrap">{c.filtro || '—'}</td>
+                          <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-500 whitespace-nowrap">{c.cidade || '—'}</td>
+                          <td className="py-2 px-2 border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.conv > 0 ? fmtNum(c.conv) : '—'}</td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
                 {pillars.alcance.length > 0 && (
                   <tfoot>
-                    <tr className="bg-blue-100/80 font-black text-blue-950 border-t-2 border-blue-400">
-                      <td colSpan={3} className="py-2.5 px-4 border-r border-blue-200 text-left uppercase text-[10px]">
-                        Subtotal de Alcance ({pillars.alcance.length} ações)
+                    <tr className="bg-blue-100/90 font-black text-blue-950 border-t-2 border-blue-400 text-[9.5px]">
+                      <td colSpan={3} className="py-2.5 px-3 border-r border-blue-200 text-left uppercase">
+                        Subtotal Alcance ({pillars.alcance.length} ações)
                       </td>
-                      <td className="py-2.5 px-3 border-r border-blue-200 text-right font-mono">
-                        {fmtBRL(totalAlcInvestimento)}
-                      </td>
-                      <td className="py-2.5 px-3 border-r border-blue-200 text-right font-mono text-neutral-950">
-                        {fmtBRL(totalAlcGasto)}
-                      </td>
-                      <td className="py-2.5 px-4 border-r border-blue-200 text-right font-mono text-blue-950">
-                        {fmtNum(totalAlcAlcance)}
-                      </td>
-                      <td className="py-2.5 px-4 text-right font-mono text-blue-900">
-                        {fmtBRL(cpmMedioAlc)} <span className="text-[9px] font-normal">(médio)</span>
-                      </td>
+                      <td className="py-2.5 px-2 border-r border-blue-200 text-right font-mono">{fmtBRL(totalAlcInvestimento)}</td>
+                      <td className="py-2.5 px-2 border-r border-blue-200 text-right font-mono text-neutral-950">{fmtBRL(totalAlcGasto)}</td>
+                      <td className="py-2.5 px-2 border-r border-blue-200 text-right font-mono text-blue-950">{fmtNum(totalAlcAlcance)}</td>
+                      <td className="py-2.5 px-2 border-r border-blue-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-2 border-r border-blue-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-2 border-r border-blue-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-2 border-r border-blue-200 text-right font-mono text-blue-900">{fmtBRL(cpmMedioAlc)}</td>
+                      <td className="py-2.5 px-2 border-r border-blue-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-2 border-r border-blue-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-2 border-r border-blue-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-2 border-r border-blue-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-1.5 border-r border-blue-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-1.5 border-r border-blue-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-2 border-blue-200 text-center text-neutral-500 font-mono">—</td>
                     </tr>
                   </tfoot>
                 )}
@@ -515,7 +530,7 @@ export const StepReport: React.FC<StepReportProps> = ({
           </div>
 
           {/* ═══════════════════════════════════════════════════════════════ */}
-          {/* PILAR 2: CAMPANHAS DE ENGAJAMENTO E TRÁFEGO */}
+          {/* PILAR 2: CAMPANHAS DE ENGAJAMENTO E TRÁFEGO (17 COLUNAS) */}
           {/* ═══════════════════════════════════════════════════════════════ */}
           <div className="bg-white rounded-xl shadow-xl border border-neutral-800 overflow-hidden text-neutral-950 print-avoid-break">
             <div className="bg-gradient-to-r from-emerald-700 to-teal-800 text-white px-5 py-3 flex items-center justify-between">
@@ -525,10 +540,10 @@ export const StepReport: React.FC<StepReportProps> = ({
                 </div>
                 <div>
                   <h3 className="font-extrabold text-sm uppercase tracking-wide">
-                    Campanhas de Engajamento e Tráfego (WhatsApp, Conversas e Links)
+                    2. Campanhas de Engajamento e Tráfego (WhatsApp, Conversas e Links)
                   </h3>
                   <p className="text-[11px] text-emerald-100/90 font-medium">
-                    Foco em gerar mensagens diretas, interações qualificadas e tráfego de destino
+                    Foco em gerar mensagens diretas, interações qualificadas e tráfego de destino • 17 Colunas Originais
                   </p>
                 </div>
               </div>
@@ -540,126 +555,86 @@ export const StepReport: React.FC<StepReportProps> = ({
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-[11px] font-sans">
+              <table className="w-full border-collapse text-[10px] font-sans">
                 <thead>
-                  <tr className="bg-neutral-200 text-neutral-900 font-bold uppercase tracking-tight text-[9.5px]">
-                    <th className="py-2.5 px-4 border-r border-b border-neutral-300 text-left min-w-[240px]">
-                      Ação / Criativo
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-center whitespace-nowrap">
-                      Formato
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-center whitespace-nowrap">
-                      Validade
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-right whitespace-nowrap">
-                      Investimento
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-right whitespace-nowrap">
-                      Valor Gasto
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-right whitespace-nowrap">
-                      Alcance
-                    </th>
-                    <th className="py-2.5 px-4 border-r border-b border-neutral-300 text-right whitespace-nowrap bg-emerald-50 text-emerald-950">
-                      Conversas WhatsApp
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-right whitespace-nowrap bg-emerald-50 text-emerald-950">
-                      Custo / Conversa
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-right whitespace-nowrap">
-                      Cliques Link
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-right whitespace-nowrap">
-                      CPC
-                    </th>
-                    <th className="py-2.5 px-3 border-b border-neutral-300 text-right whitespace-nowrap">
-                      Interações
-                    </th>
+                  <tr className="bg-neutral-200 text-neutral-900 font-bold uppercase tracking-tight text-[8.5px]">
+                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-left min-w-[200px]">1. Nome da Ação</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-center whitespace-nowrap">2. Formato</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-center whitespace-nowrap">3. Validade</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">4. Investimento</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">5. Valor Gasto</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">6. Alcance</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap bg-emerald-100 text-emerald-950 font-black">7. Engajamento</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap bg-emerald-100 text-emerald-950 font-black">8. Cliques Link</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">9. ThruPlay</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">10. Custo / 1.000</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap bg-emerald-100 text-emerald-950 font-black">11. Custo / Clique</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">12. Custo / ThruPlay</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap bg-emerald-100 text-emerald-950 font-black">13. Custo / Interação</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap bg-emerald-100 text-emerald-950 font-black">14. Custo / Conversa</th>
+                    <th className="py-2.5 px-1.5 border-r border-b border-neutral-300 text-center whitespace-nowrap">15. Filtro</th>
+                    <th className="py-2.5 px-1.5 border-r border-b border-neutral-300 text-center whitespace-nowrap">16. Cidade</th>
+                    <th className="py-2.5 px-2 border-b border-neutral-300 text-right whitespace-nowrap bg-emerald-100 text-emerald-950 font-black">17. Conversas</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pillars.engajamentoTrafego.length === 0 ? (
                     <tr>
-                      <td colSpan={11} className="py-4 text-center text-neutral-500 italic">
+                      <td colSpan={17} className="py-4 text-center text-neutral-500 italic">
                         Nenhuma campanha nesta categoria no período.
                       </td>
                     </tr>
                   ) : (
                     pillars.engajamentoTrafego.map((c) => (
                       <tr key={c.id} className="hover:bg-emerald-50/40 border-b border-neutral-200 transition-colors">
-                        <td className="py-2.5 px-4 border-r border-neutral-200 text-left font-semibold text-neutral-900">
+                        <td className="py-2 px-3 border-r border-neutral-200 text-left font-semibold text-neutral-900">
                           {titleCase(c.displayName || c.name)}
                           {c.aiNotes && (
-                            <span className="block text-[9.5px] text-emerald-700 font-normal mt-0.5 no-print">
+                            <span className="block text-[8.5px] text-emerald-700 font-normal mt-0.5 no-print">
                               {c.aiNotes}
                             </span>
                           )}
                         </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-center text-neutral-700 whitespace-nowrap">
-                          {c.format}
-                        </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-center text-neutral-600 whitespace-nowrap">
-                          {c.validity || '—'}
-                        </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-right text-neutral-800 whitespace-nowrap font-mono">
-                          {fmtBRL(c.budget)}
-                        </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-right text-neutral-950 font-bold whitespace-nowrap font-mono">
-                          {fmtBRL(c.spent)}
-                        </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">
-                          {fmtNum(c.reach)}
-                        </td>
-                        <td className="py-2.5 px-4 border-r border-neutral-200 text-right font-black text-emerald-800 whitespace-nowrap font-mono bg-emerald-50/50">
-                          {c.conv > 0 ? `${c.conv} conversas` : '—'}
-                        </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-right font-bold text-emerald-700 whitespace-nowrap font-mono bg-emerald-50/50">
-                          {c.cConv > 0 ? fmtBRL(c.cConv) : '—'}
-                        </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">
-                          {c.links > 0 ? fmtNum(c.links) : '—'}
-                        </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">
-                          {c.cpc > 0 ? fmtBRL(c.cpc) : '—'}
-                        </td>
-                        <td className="py-2.5 px-3 text-right text-neutral-700 whitespace-nowrap font-mono">
-                          {c.eng > 0 ? fmtNum(c.eng) : '—'}
-                        </td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-700 whitespace-nowrap">{c.format}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-600 whitespace-nowrap">{c.validity || '—'}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-800 whitespace-nowrap font-mono">{fmtBRL(c.budget)}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-950 font-bold whitespace-nowrap font-mono">{fmtBRL(c.spent)}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{fmtNum(c.reach)}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-800 whitespace-nowrap font-mono bg-emerald-50/40">{c.eng > 0 ? fmtNum(c.eng) : '—'}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-800 whitespace-nowrap font-mono bg-emerald-50/40">{c.links > 0 ? fmtNum(c.links) : '—'}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.views > 0 ? fmtNum(c.views) : '—'}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.cpm > 0 ? fmtBRL(c.cpm) : '—'}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-800 whitespace-nowrap font-mono bg-emerald-50/40">{c.cpc > 0 ? fmtBRL(c.cpc) : '—'}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.cThru > 0 ? fmtBRL(c.cThru) : '—'}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-800 whitespace-nowrap font-mono bg-emerald-50/40">{c.cInt > 0 ? fmtBRL(c.cInt) : '—'}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right font-bold text-emerald-800 whitespace-nowrap font-mono bg-emerald-50/50">{c.cConv > 0 ? fmtBRL(c.cConv) : '—'}</td>
+                        <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-500 whitespace-nowrap">{c.filtro || '—'}</td>
+                        <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-500 whitespace-nowrap">{c.cidade || '—'}</td>
+                        <td className="py-2 px-2 border-neutral-200 text-right font-black text-emerald-950 whitespace-nowrap font-mono bg-emerald-50/60">{c.conv > 0 ? `${c.conv} conv.` : '—'}</td>
                       </tr>
                     ))
                   )}
                 </tbody>
                 {pillars.engajamentoTrafego.length > 0 && (
                   <tfoot>
-                    <tr className="bg-emerald-100/90 font-black text-emerald-950 border-t-2 border-emerald-400">
-                      <td colSpan={3} className="py-2.5 px-4 border-r border-emerald-200 text-left uppercase text-[10px]">
+                    <tr className="bg-emerald-100/90 font-black text-emerald-950 border-t-2 border-emerald-400 text-[9.5px]">
+                      <td colSpan={3} className="py-2.5 px-3 border-r border-emerald-200 text-left uppercase">
                         Subtotal Engajamento & Tráfego ({pillars.engajamentoTrafego.length} ações)
                       </td>
-                      <td className="py-2.5 px-3 border-r border-emerald-200 text-right font-mono">
-                        {fmtBRL(totalEngInvestimento)}
-                      </td>
-                      <td className="py-2.5 px-3 border-r border-emerald-200 text-right font-mono text-neutral-950">
-                        {fmtBRL(totalEngGasto)}
-                      </td>
-                      <td className="py-2.5 px-3 border-r border-emerald-200 text-right font-mono">
-                        {fmtNum(totalEngAlcance)}
-                      </td>
-                      <td className="py-2.5 px-4 border-r border-emerald-200 text-right font-mono text-emerald-950">
-                        {totalEngConv > 0 ? `${totalEngConv} conversas` : '—'}
-                      </td>
-                      <td className="py-2.5 px-3 border-r border-emerald-200 text-right font-mono text-emerald-900">
-                        {custoMedioConv > 0 ? fmtBRL(custoMedioConv) : '—'}
-                      </td>
-                      <td className="py-2.5 px-3 border-r border-emerald-200 text-right font-mono">
-                        {fmtNum(totalEngLinks)}
-                      </td>
-                      <td className="py-2.5 px-3 border-r border-emerald-200 text-right font-mono">
-                        {cpcMedioEng > 0 ? fmtBRL(cpcMedioEng) : '—'}
-                      </td>
-                      <td className="py-2.5 px-3 text-right font-mono">
-                        {fmtNum(totalEngInt)}
-                      </td>
+                      <td className="py-2.5 px-2 border-r border-emerald-200 text-right font-mono">{fmtBRL(totalEngInvestimento)}</td>
+                      <td className="py-2.5 px-2 border-r border-emerald-200 text-right font-mono text-neutral-950">{fmtBRL(totalEngGasto)}</td>
+                      <td className="py-2.5 px-2 border-r border-emerald-200 text-right font-mono">{fmtNum(totalEngAlcance)}</td>
+                      <td className="py-2.5 px-2 border-r border-emerald-200 text-right font-mono">{fmtNum(totalEngInt)}</td>
+                      <td className="py-2.5 px-2 border-r border-emerald-200 text-right font-mono">{fmtNum(totalEngLinks)}</td>
+                      <td className="py-2.5 px-2 border-r border-emerald-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-2 border-r border-emerald-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-2 border-r border-emerald-200 text-right font-mono text-emerald-900">{cpcMedioEng > 0 ? fmtBRL(cpcMedioEng) : '—'}</td>
+                      <td className="py-2.5 px-2 border-r border-emerald-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-2 border-r border-emerald-200 text-right font-mono text-emerald-900">{custoMedioIntEng > 0 ? fmtBRL(custoMedioIntEng) : '—'}</td>
+                      <td className="py-2.5 px-2 border-r border-emerald-200 text-right font-mono text-emerald-900">{custoMedioConv > 0 ? fmtBRL(custoMedioConv) : '—'}</td>
+                      <td className="py-2.5 px-1.5 border-r border-emerald-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-1.5 border-r border-emerald-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-2 border-emerald-200 text-right font-mono text-emerald-950">{totalEngConv > 0 ? `${totalEngConv} conv.` : '—'}</td>
                     </tr>
                   </tfoot>
                 )}
@@ -668,7 +643,7 @@ export const StepReport: React.FC<StepReportProps> = ({
           </div>
 
           {/* ═══════════════════════════════════════════════════════════════ */}
-          {/* PILAR 3: CAMPANHAS DE REELS E VÍDEOS */}
+          {/* PILAR 3: CAMPANHAS DE REELS E VÍDEOS (17 COLUNAS) */}
           {/* ═══════════════════════════════════════════════════════════════ */}
           <div className="bg-white rounded-xl shadow-xl border border-neutral-800 overflow-hidden text-neutral-950 print-avoid-break">
             <div className="bg-gradient-to-r from-purple-800 to-indigo-900 text-white px-5 py-3 flex items-center justify-between">
@@ -678,10 +653,10 @@ export const StepReport: React.FC<StepReportProps> = ({
                 </div>
                 <div>
                   <h3 className="font-extrabold text-sm uppercase tracking-wide">
-                    Campanhas de Reels e Vídeos (Retenção Audiovisual & ThruPlay)
+                    3. Campanhas de Reels e Vídeos (Retenção Audiovisual & ThruPlay)
                   </h3>
                   <p className="text-[11px] text-purple-100/90 font-medium">
-                    Métricas de consumo de vídeo, alcance dinâmico de Reels e custo por retenção
+                    Métricas de consumo de vídeo, alcance dinâmico de Reels e custo por retenção • 17 Colunas Originais
                   </p>
                 </div>
               </div>
@@ -693,117 +668,86 @@ export const StepReport: React.FC<StepReportProps> = ({
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-[11px] font-sans">
+              <table className="w-full border-collapse text-[10px] font-sans">
                 <thead>
-                  <tr className="bg-neutral-200 text-neutral-900 font-bold uppercase tracking-tight text-[9.5px]">
-                    <th className="py-2.5 px-4 border-r border-b border-neutral-300 text-left min-w-[240px]">
-                      Ação / Reel
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-center whitespace-nowrap">
-                      Formato
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-center whitespace-nowrap">
-                      Validade
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-right whitespace-nowrap">
-                      Investimento
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-right whitespace-nowrap">
-                      Valor Gasto
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-right whitespace-nowrap">
-                      Alcance dos Reels
-                    </th>
-                    <th className="py-2.5 px-4 border-r border-b border-neutral-300 text-right whitespace-nowrap bg-purple-50 text-purple-950">
-                      Visualizações (ThruPlay)
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-right whitespace-nowrap bg-purple-50 text-purple-950">
-                      Custo / Visualização
-                    </th>
-                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-right whitespace-nowrap">
-                      Conversas Geradas
-                    </th>
-                    <th className="py-2.5 px-3 border-b border-neutral-300 text-right whitespace-nowrap">
-                      Interações / Retenção
-                    </th>
+                  <tr className="bg-neutral-200 text-neutral-900 font-bold uppercase tracking-tight text-[8.5px]">
+                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-left min-w-[200px]">1. Nome da Ação</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-center whitespace-nowrap">2. Formato</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-center whitespace-nowrap">3. Validade</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">4. Investimento</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">5. Valor Gasto</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap bg-purple-100 text-purple-950 font-black">6. Alcance</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">7. Engajamento</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">8. Cliques Link</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap bg-purple-100 text-purple-950 font-black">9. ThruPlay</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">10. Custo / 1.000</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">11. Custo / Clique</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap bg-purple-100 text-purple-950 font-black">12. Custo / ThruPlay</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">13. Custo / Interação</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">14. Custo / Conversa</th>
+                    <th className="py-2.5 px-1.5 border-r border-neutral-300 text-center whitespace-nowrap">15. Filtro</th>
+                    <th className="py-2.5 px-1.5 border-r border-neutral-300 text-center whitespace-nowrap">16. Cidade</th>
+                    <th className="py-2.5 px-2 border-b border-neutral-300 text-right whitespace-nowrap bg-purple-100 text-purple-950 font-black">17. Conversas</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pillars.reels.length === 0 ? (
                     <tr>
-                      <td colSpan={10} className="py-4 text-center text-neutral-500 italic">
+                      <td colSpan={17} className="py-4 text-center text-neutral-500 italic">
                         Nenhuma campanha de Reels veiculada no período.
                       </td>
                     </tr>
                   ) : (
                     pillars.reels.map((c) => (
                       <tr key={c.id} className="hover:bg-purple-50/40 border-b border-neutral-200 transition-colors">
-                        <td className="py-2.5 px-4 border-r border-neutral-200 text-left font-semibold text-neutral-900">
+                        <td className="py-2 px-3 border-r border-neutral-200 text-left font-semibold text-neutral-900">
                           {titleCase(c.displayName || c.name)}
                           {c.aiNotes && (
-                            <span className="block text-[9.5px] text-purple-700 font-normal mt-0.5 no-print">
+                            <span className="block text-[8.5px] text-purple-700 font-normal mt-0.5 no-print">
                               {c.aiNotes}
                             </span>
                           )}
                         </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-center text-neutral-700 whitespace-nowrap">
-                          {c.format}
-                        </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-center text-neutral-600 whitespace-nowrap">
-                          {c.validity || '—'}
-                        </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-right text-neutral-800 whitespace-nowrap font-mono">
-                          {fmtBRL(c.budget)}
-                        </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-right text-neutral-950 font-bold whitespace-nowrap font-mono">
-                          {fmtBRL(c.spent)}
-                        </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">
-                          {fmtNum(c.reach)}
-                        </td>
-                        <td className="py-2.5 px-4 border-r border-neutral-200 text-right font-black text-purple-900 whitespace-nowrap font-mono bg-purple-50/50">
-                          {c.views > 0 ? `${fmtNum(c.views)} views` : '—'}
-                        </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-right font-bold text-purple-800 whitespace-nowrap font-mono bg-purple-50/50">
-                          {c.cThru > 0 ? fmtBRL(c.cThru) : '—'}
-                        </td>
-                        <td className="py-2.5 px-3 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">
-                          {c.conv > 0 ? `${c.conv} conv.` : '—'}
-                        </td>
-                        <td className="py-2.5 px-3 text-right text-neutral-700 whitespace-nowrap font-mono">
-                          {c.eng > 0 ? fmtNum(c.eng) : '—'}
-                        </td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-700 whitespace-nowrap">{c.format}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-600 whitespace-nowrap">{c.validity || '—'}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-800 whitespace-nowrap font-mono">{fmtBRL(c.budget)}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-950 font-bold whitespace-nowrap font-mono">{fmtBRL(c.spent)}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{fmtNum(c.reach)}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.eng > 0 ? fmtNum(c.eng) : '—'}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.links > 0 ? fmtNum(c.links) : '—'}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right font-black text-purple-900 whitespace-nowrap font-mono bg-purple-50/50">{c.views > 0 ? fmtNum(c.views) : '—'}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.cpm > 0 ? fmtBRL(c.cpm) : '—'}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.cpc > 0 ? fmtBRL(c.cpc) : '—'}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right font-bold text-purple-800 whitespace-nowrap font-mono bg-purple-50/50">{c.cThru > 0 ? fmtBRL(c.cThru) : '—'}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.cInt > 0 ? fmtBRL(c.cInt) : '—'}</td>
+                        <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.cConv > 0 ? fmtBRL(c.cConv) : '—'}</td>
+                        <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-500 whitespace-nowrap">{c.filtro || '—'}</td>
+                        <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-500 whitespace-nowrap">{c.cidade || '—'}</td>
+                        <td className="py-2 px-2 border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.conv > 0 ? `${c.conv} conv.` : '—'}</td>
                       </tr>
                     ))
                   )}
                 </tbody>
                 {pillars.reels.length > 0 && (
                   <tfoot>
-                    <tr className="bg-purple-100/90 font-black text-purple-950 border-t-2 border-purple-400">
-                      <td colSpan={3} className="py-2.5 px-4 border-r border-purple-200 text-left uppercase text-[10px]">
+                    <tr className="bg-purple-100/90 font-black text-purple-950 border-t-2 border-purple-400 text-[9.5px]">
+                      <td colSpan={3} className="py-2.5 px-3 border-r border-purple-200 text-left uppercase">
                         Subtotal Reels & Vídeos ({pillars.reels.length} ações)
                       </td>
-                      <td className="py-2.5 px-3 border-r border-purple-200 text-right font-mono">
-                        {fmtBRL(totalReelsInvestimento)}
-                      </td>
-                      <td className="py-2.5 px-3 border-r border-purple-200 text-right font-mono text-neutral-950">
-                        {fmtBRL(totalReelsGasto)}
-                      </td>
-                      <td className="py-2.5 px-3 border-r border-purple-200 text-right font-mono">
-                        {fmtNum(totalReelsAlcance)}
-                      </td>
-                      <td className="py-2.5 px-4 border-r border-purple-200 text-right font-mono text-purple-950">
-                        {totalReelsViews > 0 ? `${fmtNum(totalReelsViews)} views` : '—'}
-                      </td>
-                      <td className="py-2.5 px-3 border-r border-purple-200 text-right font-mono text-purple-900">
-                        {custoMedioView > 0 ? fmtBRL(custoMedioView) : '—'}
-                      </td>
-                      <td className="py-2.5 px-3 border-r border-purple-200 text-right font-mono">
-                        {totalReelsConv > 0 ? `${totalReelsConv} conv.` : '—'}
-                      </td>
-                      <td className="py-2.5 px-3 text-right font-mono">
-                        {fmtNum(totalReelsInt)}
-                      </td>
+                      <td className="py-2.5 px-2 border-r border-purple-200 text-right font-mono">{fmtBRL(totalReelsInvestimento)}</td>
+                      <td className="py-2.5 px-2 border-r border-purple-200 text-right font-mono text-neutral-950">{fmtBRL(totalReelsGasto)}</td>
+                      <td className="py-2.5 px-2 border-r border-purple-200 text-right font-mono">{fmtNum(totalReelsAlcance)}</td>
+                      <td className="py-2.5 px-2 border-r border-purple-200 text-right font-mono">{fmtNum(totalReelsInt)}</td>
+                      <td className="py-2.5 px-2 border-r border-purple-200 text-right font-mono">{totalReelsLinks > 0 ? fmtNum(totalReelsLinks) : '—'}</td>
+                      <td className="py-2.5 px-2 border-r border-purple-200 text-right font-mono text-purple-950">{fmtNum(totalReelsViews)}</td>
+                      <td className="py-2.5 px-2 border-r border-purple-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-2 border-r border-purple-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-2 border-r border-purple-200 text-right font-mono text-purple-900">{custoMedioView > 0 ? fmtBRL(custoMedioView) : '—'}</td>
+                      <td className="py-2.5 px-2 border-r border-purple-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-2 border-r border-purple-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-1.5 border-r border-purple-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-1.5 border-r border-purple-200 text-center text-neutral-500 font-mono">—</td>
+                      <td className="py-2.5 px-2 border-purple-200 text-right font-mono">{totalReelsConv > 0 ? `${totalReelsConv} conv.` : '—'}</td>
                     </tr>
                   </tfoot>
                 )}
@@ -812,48 +756,163 @@ export const StepReport: React.FC<StepReportProps> = ({
           </div>
 
           {/* ═══════════════════════════════════════════════════════════════ */}
-          {/* RESUMO CONSOLIDADO DOS TRÊS PILARES */}
+          {/* RESUMO CONSOLIDADO DOS TRÊS PILARES (17 COLUNAS COMPLETAS) */}
           {/* ═══════════════════════════════════════════════════════════════ */}
           <div className="bg-white rounded-xl shadow-xl border border-neutral-800 overflow-hidden text-neutral-950 print-avoid-break">
             <div className="bg-[#FF9900] text-white px-5 py-2.5 font-black text-xs uppercase tracking-wider text-center">
-              Consolidação Total do Período • Todos os Pilares
+              Consolidação Total do Período • Matriz de 17 Colunas Completas
             </div>
+
+            {/* Quick KPI Cards */}
             <div className="p-4 bg-amber-50/60 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center border-b border-amber-200 font-sans">
-              <div className="bg-white p-3 rounded-lg border border-amber-200">
+              <div className="bg-white p-3 rounded-lg border border-amber-200 shadow-xs">
                 <span className="text-[10px] uppercase font-bold text-neutral-500 block">Total Investido</span>
                 <span className="text-base font-black text-neutral-900 font-mono">{fmtBRL(totalSpent)}</span>
               </div>
-              <div className="bg-white p-3 rounded-lg border border-amber-200">
+              <div className="bg-white p-3 rounded-lg border border-amber-200 shadow-xs">
                 <span className="text-[10px] uppercase font-bold text-neutral-500 block">Alcance Total</span>
                 <span className="text-base font-black text-blue-900 font-mono">{fmtNum(totalReach)}</span>
               </div>
-              <div className="bg-white p-3 rounded-lg border border-amber-200">
+              <div className="bg-white p-3 rounded-lg border border-amber-200 shadow-xs">
                 <span className="text-[10px] uppercase font-bold text-neutral-500 block">Conversas Whats</span>
                 <span className="text-base font-black text-emerald-800 font-mono">{totalConv} conversas</span>
               </div>
-              <div className="bg-white p-3 rounded-lg border border-amber-200">
+              <div className="bg-white p-3 rounded-lg border border-amber-200 shadow-xs">
                 <span className="text-[10px] uppercase font-bold text-neutral-500 block">Visualizações Reels</span>
                 <span className="text-base font-black text-purple-900 font-mono">{fmtNum(totalViews)}</span>
               </div>
             </div>
 
+            {/* Full 17-column Consolidated Grand Total Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-[10px] font-sans">
+                <thead>
+                  <tr className="bg-neutral-200 text-neutral-900 font-bold uppercase tracking-tight text-[8.5px]">
+                    <th className="py-2.5 px-3 border-r border-b border-neutral-300 text-left min-w-[200px]">1. Pilar / Consolidação</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-center whitespace-nowrap">2. Formato</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-center whitespace-nowrap">3. Validade</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">4. Investimento</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">5. Valor Gasto</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">6. Alcance</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">7. Engajamento</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">8. Cliques Link</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">9. ThruPlay</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">10. Custo / 1.000</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">11. Custo / Clique</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">12. Custo / ThruPlay</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">13. Custo / Interação</th>
+                    <th className="py-2.5 px-2 border-r border-b border-neutral-300 text-right whitespace-nowrap">14. Custo / Conversa</th>
+                    <th className="py-2.5 px-1.5 border-r border-b border-neutral-300 text-center whitespace-nowrap">15. Filtro</th>
+                    <th className="py-2.5 px-1.5 border-r border-b border-neutral-300 text-center whitespace-nowrap">16. Cidade</th>
+                    <th className="py-2.5 px-2 border-b border-neutral-300 text-right whitespace-nowrap">17. Conversas</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* Row Pilar 1 */}
+                  <tr className="hover:bg-neutral-50 border-b border-neutral-200">
+                    <td colSpan={3} className="py-2 px-3 border-r border-neutral-200 font-bold text-blue-900 text-left">
+                      Pilar 1: Alcance ({pillars.alcance.length} ações)
+                    </td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono">{fmtBRL(totalAlcInvestimento)}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono text-neutral-950 font-bold">{fmtBRL(totalAlcGasto)}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono text-blue-950 font-bold">{fmtNum(totalAlcAlcance)}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono text-blue-900">{fmtBRL(cpmMedioAlc)}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-2 border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                  </tr>
+
+                  {/* Row Pilar 2 */}
+                  <tr className="hover:bg-neutral-50 border-b border-neutral-200">
+                    <td colSpan={3} className="py-2 px-3 border-r border-neutral-200 font-bold text-emerald-900 text-left">
+                      Pilar 2: Engajamento & Tráfego ({pillars.engajamentoTrafego.length} ações)
+                    </td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono">{fmtBRL(totalEngInvestimento)}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono text-neutral-950 font-bold">{fmtBRL(totalEngGasto)}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono">{fmtNum(totalEngAlcance)}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono">{fmtNum(totalEngInt)}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono">{fmtNum(totalEngLinks)}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono">{cpcMedioEng > 0 ? fmtBRL(cpcMedioEng) : '—'}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono">{custoMedioIntEng > 0 ? fmtBRL(custoMedioIntEng) : '—'}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono text-emerald-900 font-bold">{custoMedioConv > 0 ? fmtBRL(custoMedioConv) : '—'}</td>
+                    <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-2 border-neutral-200 text-right font-mono text-emerald-900 font-bold">{totalEngConv > 0 ? `${totalEngConv} conv.` : '—'}</td>
+                  </tr>
+
+                  {/* Row Pilar 3 */}
+                  <tr className="hover:bg-neutral-50 border-b border-neutral-200">
+                    <td colSpan={3} className="py-2 px-3 border-r border-neutral-200 font-bold text-purple-900 text-left">
+                      Pilar 3: Reels & Vídeos ({pillars.reels.length} ações)
+                    </td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono">{fmtBRL(totalReelsInvestimento)}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono text-neutral-950 font-bold">{fmtBRL(totalReelsGasto)}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono">{fmtNum(totalReelsAlcance)}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono">{fmtNum(totalReelsInt)}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono">{totalReelsLinks > 0 ? fmtNum(totalReelsLinks) : '—'}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono text-purple-950 font-bold">{fmtNum(totalReelsViews)}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-right font-mono text-purple-900 font-bold">{custoMedioView > 0 ? fmtBRL(custoMedioView) : '—'}</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-2 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-2 px-2 border-neutral-200 text-right font-mono">{totalReelsConv > 0 ? `${totalReelsConv} conv.` : '—'}</td>
+                  </tr>
+                </tbody>
+
+                <tfoot>
+                  <tr className="bg-amber-100 font-black text-neutral-950 border-t-2 border-amber-500 text-[10px]">
+                    <td colSpan={3} className="py-3 px-3 border-r border-amber-300 text-left uppercase">
+                      TOTAL GERAL CONSOLIDADO ({campaigns.length} campanhas)
+                    </td>
+                    <td className="py-3 px-2 border-r border-amber-300 text-right font-mono">{fmtBRL(totalBudget)}</td>
+                    <td className="py-3 px-2 border-r border-amber-300 text-right font-mono text-neutral-950 font-black">{fmtBRL(totalSpent)}</td>
+                    <td className="py-3 px-2 border-r border-amber-300 text-right font-mono text-blue-950">{fmtNum(totalReach)}</td>
+                    <td className="py-3 px-2 border-r border-amber-300 text-right font-mono">{fmtNum(totalInt)}</td>
+                    <td className="py-3 px-2 border-r border-amber-300 text-right font-mono">{fmtNum(totalLinks)}</td>
+                    <td className="py-3 px-2 border-r border-amber-300 text-right font-mono text-purple-950">{fmtNum(totalViews)}</td>
+                    <td className="py-3 px-2 border-r border-amber-300 text-right font-mono">{totalReach > 0 ? fmtBRL((totalSpent / totalReach) * 1000) : '—'}</td>
+                    <td className="py-3 px-2 border-r border-amber-300 text-right font-mono">{totalLinks > 0 ? fmtBRL(totalSpent / totalLinks) : '—'}</td>
+                    <td className="py-3 px-2 border-r border-amber-300 text-right font-mono">{totalViews > 0 ? fmtBRL(totalSpent / totalViews) : '—'}</td>
+                    <td className="py-3 px-2 border-r border-amber-300 text-right font-mono">{totalInt > 0 ? fmtBRL(totalSpent / totalInt) : '—'}</td>
+                    <td className="py-3 px-2 border-r border-amber-300 text-right font-mono text-emerald-950">{totalConv > 0 ? fmtBRL(totalSpent / totalConv) : '—'}</td>
+                    <td className="py-3 px-1.5 border-r border-amber-300 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-3 px-1.5 border-r border-amber-300 text-center text-neutral-400 font-mono">—</td>
+                    <td className="py-3 px-2 border-amber-300 text-right font-mono text-emerald-950 font-black">{totalConv > 0 ? `${totalConv} conv.` : '—'}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
             {/* Raio-X dos Resultados */}
             <div className="p-5 bg-white text-xs text-neutral-700 leading-relaxed border-t border-neutral-200">
               <strong className="block text-neutral-900 font-bold mb-1 uppercase tracking-wide text-[10px]">
-                Raio-X Técnico dos Indicadores de Performance:
+                Raio-X Técnico dos Indicadores de Performance (17 Colunas):
               </strong>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-[10.5px] mt-2">
                 <div className="bg-neutral-50 p-2.5 rounded border border-neutral-200">
-                  <strong className="text-blue-900 block mb-0.5">Pilar de Alcance:</strong>
-                  Mede a amplitude e impacto de marca. O CPM indica quanto custou cada lote de 1.000 pessoas impactadas pelo anúncio.
+                  <strong className="text-blue-900 block mb-0.5">Pilar 1 - Alcance:</strong>
+                  Mede a amplitude e impacto de marca. As colunas 6 (Alcance) e 10 (Custo por 1.000 pessoas) são os focos centrais. Em ações de alcance, o engajamento não duplica o alcance.
                 </div>
                 <div className="bg-neutral-50 p-2.5 rounded border border-neutral-200">
-                  <strong className="text-emerald-900 block mb-0.5">Pilar de Conversas & Tráfego:</strong>
-                  Focado em conversões diretas no WhatsApp e cliques para links externos, revelando o custo efetivo de aquisição por lead/contato.
+                  <strong className="text-emerald-900 block mb-0.5">Pilar 2 - Conversas & Tráfego:</strong>
+                  Focado em conversões diretas no WhatsApp (col. 17), custo por conversa (col. 14), cliques no link (col. 8) e CPC (col. 11), aferindo a geração ativa de leads.
                 </div>
                 <div className="bg-neutral-50 p-2.5 rounded border border-neutral-200">
-                  <strong className="text-purple-900 block mb-0.5">Pilar de Reels & Vídeos:</strong>
-                  Focado no tempo de tela e retenção. As visualizações ThruPlay refletem pessoas que assistiram por pelo menos 15 segundos.
+                  <strong className="text-purple-900 block mb-0.5">Pilar 3 - Reels & Vídeos:</strong>
+                  Focado na retenção audiovisual. As visualizações ThruPlay (col. 9) e custo por ThruPlay (col. 12) avaliam os vídeos com retenção de 15 segundos ou visualização completa.
                 </div>
               </div>
             </div>

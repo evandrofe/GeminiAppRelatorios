@@ -487,6 +487,8 @@ export function parseExcelWorkbook(wb: XLSX.WorkBook): CampaignRow[] {
   const iRes = getIdx(headers, ['resultados', 'results', 'result']);
   const iCPR = getIdx(headers, ['custo por resultado', 'cost per result']);
   const iTRes = getIdx(headers, ['tipo de resultado']);
+  const iFiltro = getIdx(headers, ['filtro', 'filter']);
+  const iCidade = getIdx(headers, ['cidade', 'city', 'municipio', 'localizacao', 'location']);
 
   const g = (row: any[], idx: number): string => {
     if (idx < 0 || idx >= row.length) return '';
@@ -592,7 +594,9 @@ export function parseExcelWorkbook(wb: XLSX.WorkBook): CampaignRow[] {
       cpc,
       cThru,
       cInt,
-      cConv
+      cConv,
+      filtro: g(row, iFiltro) || '',
+      cidade: g(row, iCidade) || ''
     });
   }
 

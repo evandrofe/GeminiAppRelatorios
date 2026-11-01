@@ -11,11 +11,13 @@ export async function exportToExcel(
     orange: 'FFFF9900',
     gold: 'FFFBBC04',
     gray1: 'FFB7B7B7',
-    grayDark: 'FF333333',
-    blueHead: 'FF1D4ED8',
-    greenHead: 'FF047857',
-    purpleHead: 'FF7C3AED',
-    subtotalBg: 'FFF3F4F6',
+    blueHead: 'FF1E3A8A',
+    greenHead: 'FF065F46',
+    purpleHead: 'FF5B21B6',
+    blueSubBg: 'FFE0E7FF',
+    greenSubBg: 'FFD1FAE5',
+    purpleSubBg: 'FFEDE9FE',
+    totalBg: 'FFFFEDD5',
     white: 'FFFFFFFF',
     black: 'FF000000',
     dark: 'FF222526',
@@ -283,473 +285,33 @@ export async function exportToExcel(
   lIGV.alignment = al('center', 'middle', true);
 
   // ═════════════════════════════════════════════════════════════════════════
-  // ABA 2: RELATÓRIO EXECUTIVO SEGMENTADO (Padrão Refinado Gemini)
+  // ABA 2: RELATÓRIO (AÇÕES MENSAIS COM TODAS AS 17 COLUNAS ORIGINAIS)
+  // ESTRUTURADO E REMANEJADO POR PILARES COM SUBTOTAL E CABEÇALHOS COMPLETOS
   // ═════════════════════════════════════════════════════════════════════════
-  const pillars = categorizeCampaignPillars(campaigns);
-  const wsSeg = wb.addWorksheet('Relatório Segmentado (Gemini)');
+  const ws = wb.addWorksheet('Relatório');
 
-  wsSeg.columns = [
-    { width: 34 }, // Nome da Ação
-    { width: 16 }, // Formato
-    { width: 18 }, // Validade
-    { width: 16 }, // Investimento
-    { width: 16 }, // Valor Gasto
-    { width: 16 }, // Pessoas Alcançadas
-    { width: 18 }, // Conversas Whats / Visualizações
-    { width: 18 }, // Custo por Conversa / Thruplay
-    { width: 16 }, // Cliques
-    { width: 16 }, // CPC / CPM
-    { width: 18 }  // Engajamento
-  ];
-
-  let curRow = 1;
-
-  // Título Geral da Planilha
-  const titleRow = wsSeg.getRow(curRow);
-  titleRow.height = 36;
-  wsSeg.mergeCells(`A${curRow}:K${curRow}`);
-  const cTitleSeg = wsSeg.getCell(`A${curRow}`);
-  cTitleSeg.value = `RELATÓRIO DE DESEMPENHO META ADS • ${meta.cliente.toUpperCase()} (${meta.mes.toUpperCase()} ${meta.ano})`;
-  cTitleSeg.fill = fl(C.orange);
-  cTitleSeg.font = fn(true, 14, C.white, 'Arial');
-  cTitleSeg.alignment = al('center', 'middle');
-  cTitleSeg.border = bAll;
-  curRow += 2;
-
-  // ── SEÇÃO 1: CAMPANHAS DE ALCANCE ──
-  const sec1Head = wsSeg.getRow(curRow);
-  sec1Head.height = 28;
-  wsSeg.mergeCells(`A${curRow}:K${curRow}`);
-  const cSec1 = wsSeg.getCell(`A${curRow}`);
-  cSec1.value = '1. CAMPANHAS DE ALCANCE (RECONHECIMENTO & DISTRIBUIÇÃO DE MARCA)';
-  cSec1.fill = fl('FF1E3A8A'); // Blue dark
-  cSec1.font = fn(true, 11, C.white);
-  cSec1.alignment = al('left', 'middle');
-  cSec1.border = bAll;
-  curRow++;
-
-  const alcHeaders = [
-    'NOME DA AÇÃO / CRIATIVO',
-    'FORMATO',
-    'VALIDADE',
-    'INVESTIMENTO',
-    'VALOR GASTO',
-    'PESSOAS ALCANÇADAS (ALCANCE)',
-    'CUSTO POR 1.000 CONTAS (CPM)',
-    '-',
-    '-',
-    '-',
-    '-'
-  ];
-  const alcHeadRow = wsSeg.getRow(curRow);
-  alcHeadRow.height = 22;
-  alcHeaders.forEach((h, idx) => {
-    const cell = alcHeadRow.getCell(idx + 1);
-    cell.value = h;
-    cell.fill = fl(C.gray1);
-    cell.font = fn(true, 9.5, C.black);
-    cell.alignment = al('center', 'middle');
-    cell.border = bAll;
-  });
-  curRow++;
-
-  let spentAlc = 0, budgetAlc = 0, reachAlc = 0;
-  if (pillars.alcance.length === 0) {
-    const emptyRow = wsSeg.addRow(['Nenhuma campanha exclusiva de alcance no período.', '', '', '', '', '', '', '', '', '', '']);
-    emptyRow.height = 20;
-    for (let ci = 1; ci <= 11; ci++) {
-      emptyRow.getCell(ci).border = bAll;
-      emptyRow.getCell(ci).font = fn(false, 9, 'FF777777');
-    }
-    curRow++;
-  } else {
-    pillars.alcance.forEach((c) => {
-      spentAlc += c.spent;
-      budgetAlc += c.budget;
-      reachAlc += c.reach;
-      const vals = [
-        c.displayName || c.name,
-        c.format,
-        c.validity || '-',
-        c.budget > 0 ? c.budget : '-',
-        c.spent > 0 ? c.spent : '-',
-        c.reach > 0 ? c.reach : '-',
-        c.cpm > 0 ? c.cpm : '-',
-        '-', '-', '-', '-'
-      ];
-      const r = wsSeg.addRow(vals);
-      r.height = 20;
-      vals.forEach((v, ci) => {
-        const cell = r.getCell(ci + 1);
-        cell.fill = fl(C.white);
-        cell.font = fn(false, 9.5, C.black);
-        cell.alignment = ci === 0 ? al('left', 'middle') : al('center', 'middle');
-        cell.border = bAll;
-        if (typeof v === 'number') {
-          if ([3, 4, 6].includes(ci)) cell.numFmt = BRL;
-          if (ci === 5) cell.numFmt = NUM;
-        }
-      });
-      curRow++;
-    });
-
-    // Linha Subtotal Alcance
-    const subAlcRow = wsSeg.addRow([
-      'SUBTOTAL ALCANCE',
-      `${pillars.alcance.length} ações`,
-      '-',
-      budgetAlc > 0 ? budgetAlc : '-',
-      spentAlc > 0 ? spentAlc : '-',
-      reachAlc > 0 ? reachAlc : '-',
-      reachAlc > 0 && spentAlc > 0 ? (spentAlc / reachAlc) * 1000 : '-',
-      '-', '-', '-', '-'
-    ]);
-    subAlcRow.height = 22;
-    for (let ci = 1; ci <= 11; ci++) {
-      const cell = subAlcRow.getCell(ci);
-      cell.fill = fl('FFE0E7FF');
-      cell.font = fn(true, 10, 'FF1E3A8A');
-      cell.alignment = ci === 0 ? al('left', 'middle') : al('center', 'middle');
-      cell.border = bAll;
-      if (ci === 4 || ci === 5 || ci === 7) cell.numFmt = BRL;
-      if (ci === 6) cell.numFmt = NUM;
-    }
-    curRow++;
-  }
-  curRow++;
-
-  // ── SEÇÃO 2: CAMPANHAS DE ENGAJAMENTO & TRÁFEGO ──
-  const sec2Head = wsSeg.getRow(curRow);
-  sec2Head.height = 28;
-  wsSeg.mergeCells(`A${curRow}:K${curRow}`);
-  const cSec2 = wsSeg.getCell(`A${curRow}`);
-  cSec2.value = '2. CAMPANHAS DE ENGAJAMENTO E TRÁFEGO (WHATSAPP, CONVERSAS E CLIQUES)';
-  cSec2.fill = fl('FF065F46'); // Emerald dark
-  cSec2.font = fn(true, 11, C.white);
-  cSec2.alignment = al('left', 'middle');
-  cSec2.border = bAll;
-  curRow++;
-
-  const engHeaders = [
-    'NOME DA AÇÃO / CRIATIVO',
-    'FORMATO',
-    'VALIDADE',
-    'INVESTIMENTO',
-    'VALOR GASTO',
-    'ALCANCE OBTIDO',
-    'CONVERSAS WHATSAPP',
-    'CUSTO / CONVERSA',
-    'CLIQUES NO LINK',
-    'CUSTO / CLIQUE (CPC)',
-    'INTERAÇÕES / ENGAJ.'
-  ];
-  const engHeadRow = wsSeg.getRow(curRow);
-  engHeadRow.height = 22;
-  engHeaders.forEach((h, idx) => {
-    const cell = engHeadRow.getCell(idx + 1);
-    cell.value = h;
-    cell.fill = fl(C.gray1);
-    cell.font = fn(true, 9.5, C.black);
-    cell.alignment = al('center', 'middle');
-    cell.border = bAll;
-  });
-  curRow++;
-
-  let spentEng = 0, budgetEng = 0, reachEng = 0, convEng = 0, linksEng = 0, intEng = 0;
-  if (pillars.engajamentoTrafego.length === 0) {
-    const emptyRow = wsSeg.addRow(['Nenhuma campanha nesta categoria no período.', '', '', '', '', '', '', '', '', '', '']);
-    emptyRow.height = 20;
-    for (let ci = 1; ci <= 11; ci++) {
-      emptyRow.getCell(ci).border = bAll;
-      emptyRow.getCell(ci).font = fn(false, 9, 'FF777777');
-    }
-    curRow++;
-  } else {
-    pillars.engajamentoTrafego.forEach((c) => {
-      spentEng += c.spent;
-      budgetEng += c.budget;
-      reachEng += c.reach;
-      convEng += c.conv;
-      linksEng += c.links;
-      intEng += c.eng;
-
-      const vals = [
-        c.displayName || c.name,
-        c.format,
-        c.validity || '-',
-        c.budget > 0 ? c.budget : '-',
-        c.spent > 0 ? c.spent : '-',
-        c.reach > 0 ? c.reach : '-',
-        c.conv > 0 ? c.conv : '-',
-        c.cConv > 0 ? c.cConv : '-',
-        c.links > 0 ? c.links : '-',
-        c.cpc > 0 ? c.cpc : '-',
-        c.eng > 0 ? c.eng : '-'
-      ];
-      const r = wsSeg.addRow(vals);
-      r.height = 20;
-      vals.forEach((v, ci) => {
-        const cell = r.getCell(ci + 1);
-        cell.fill = fl(C.white);
-        cell.font = fn(false, 9.5, C.black);
-        cell.alignment = ci === 0 ? al('left', 'middle') : al('center', 'middle');
-        cell.border = bAll;
-        if (typeof v === 'number') {
-          if ([3, 4, 7, 9].includes(ci)) cell.numFmt = BRL;
-          if ([5, 6, 8, 10].includes(ci)) cell.numFmt = NUM;
-        }
-      });
-      curRow++;
-    });
-
-    // Subtotal Engajamento & Tráfego
-    const subEngRow = wsSeg.addRow([
-      'SUBTOTAL ENGAJAMENTO & TRÁFEGO',
-      `${pillars.engajamentoTrafego.length} ações`,
-      '-',
-      budgetEng > 0 ? budgetEng : '-',
-      spentEng > 0 ? spentEng : '-',
-      reachEng > 0 ? reachEng : '-',
-      convEng > 0 ? convEng : '-',
-      convEng > 0 && spentEng > 0 ? spentEng / convEng : '-',
-      linksEng > 0 ? linksEng : '-',
-      linksEng > 0 && spentEng > 0 ? spentEng / linksEng : '-',
-      intEng > 0 ? intEng : '-'
-    ]);
-    subEngRow.height = 22;
-    for (let ci = 1; ci <= 11; ci++) {
-      const cell = subEngRow.getCell(ci);
-      cell.fill = fl('FFD1FAE5');
-      cell.font = fn(true, 10, 'FF065F46');
-      cell.alignment = ci === 0 ? al('left', 'middle') : al('center', 'middle');
-      cell.border = bAll;
-      if (ci === 4 || ci === 5 || ci === 8 || ci === 10) cell.numFmt = BRL;
-      if (ci === 6 || ci === 7 || ci === 9 || ci === 11) cell.numFmt = NUM;
-    }
-    curRow++;
-  }
-  curRow++;
-
-  // ── SEÇÃO 3: CAMPANHAS DE REELS & VÍDEO ──
-  const sec3Head = wsSeg.getRow(curRow);
-  sec3Head.height = 28;
-  wsSeg.mergeCells(`A${curRow}:K${curRow}`);
-  const cSec3 = wsSeg.getCell(`A${curRow}`);
-  cSec3.value = '3. CAMPANHAS DE REELS E VÍDEOS (RETENÇÃO AUDIOVISUAL & THRUPLAY)';
-  cSec3.fill = fl('FF5B21B6'); // Purple dark
-  cSec3.font = fn(true, 11, C.white);
-  cSec3.alignment = al('left', 'middle');
-  cSec3.border = bAll;
-  curRow++;
-
-  const reelsHeaders = [
-    'NOME DA AÇÃO / REEL',
-    'FORMATO',
-    'VALIDADE',
-    'INVESTIMENTO',
-    'VALOR GASTO',
-    'ALCANCE DOS REELS',
-    'VISUALIZAÇÕES (THRUPLAY)',
-    'CUSTO / VISUALIZAÇÃO',
-    'CONVERSAS GERADAS',
-    'CLIQUES NO LINK',
-    'INTERAÇÕES / RETENÇÃO'
-  ];
-  const reelsHeadRow = wsSeg.getRow(curRow);
-  reelsHeadRow.height = 22;
-  reelsHeaders.forEach((h, idx) => {
-    const cell = reelsHeadRow.getCell(idx + 1);
-    cell.value = h;
-    cell.fill = fl(C.gray1);
-    cell.font = fn(true, 9.5, C.black);
-    cell.alignment = al('center', 'middle');
-    cell.border = bAll;
-  });
-  curRow++;
-
-  let spentReels = 0, budgetReels = 0, reachReels = 0, viewsReels = 0, convReels = 0, linksReels = 0, intReels = 0;
-  if (pillars.reels.length === 0) {
-    const emptyRow = wsSeg.addRow(['Nenhuma campanha de Reels no período.', '', '', '', '', '', '', '', '', '', '']);
-    emptyRow.height = 20;
-    for (let ci = 1; ci <= 11; ci++) {
-      emptyRow.getCell(ci).border = bAll;
-      emptyRow.getCell(ci).font = fn(false, 9, 'FF777777');
-    }
-    curRow++;
-  } else {
-    pillars.reels.forEach((c) => {
-      spentReels += c.spent;
-      budgetReels += c.budget;
-      reachReels += c.reach;
-      viewsReels += c.views;
-      convReels += c.conv;
-      linksReels += c.links;
-      intReels += c.eng;
-
-      const vals = [
-        c.displayName || c.name,
-        c.format,
-        c.validity || '-',
-        c.budget > 0 ? c.budget : '-',
-        c.spent > 0 ? c.spent : '-',
-        c.reach > 0 ? c.reach : '-',
-        c.views > 0 ? c.views : '-',
-        c.cThru > 0 ? c.cThru : '-',
-        c.conv > 0 ? c.conv : '-',
-        c.links > 0 ? c.links : '-',
-        c.eng > 0 ? c.eng : '-'
-      ];
-      const r = wsSeg.addRow(vals);
-      r.height = 20;
-      vals.forEach((v, ci) => {
-        const cell = r.getCell(ci + 1);
-        cell.fill = fl(C.white);
-        cell.font = fn(false, 9.5, C.black);
-        cell.alignment = ci === 0 ? al('left', 'middle') : al('center', 'middle');
-        cell.border = bAll;
-        if (typeof v === 'number') {
-          if ([3, 4, 7].includes(ci)) cell.numFmt = BRL;
-          if ([5, 6, 8, 9, 10].includes(ci)) cell.numFmt = NUM;
-        }
-      });
-      curRow++;
-    });
-
-    // Subtotal Reels
-    const subReelsRow = wsSeg.addRow([
-      'SUBTOTAL REELS & VÍDEO',
-      `${pillars.reels.length} ações`,
-      '-',
-      budgetReels > 0 ? budgetReels : '-',
-      spentReels > 0 ? spentReels : '-',
-      reachReels > 0 ? reachReels : '-',
-      viewsReels > 0 ? viewsReels : '-',
-      viewsReels > 0 && spentReels > 0 ? spentReels / viewsReels : '-',
-      convReels > 0 ? convReels : '-',
-      linksReels > 0 ? linksReels : '-',
-      intReels > 0 ? intReels : '-'
-    ]);
-    subReelsRow.height = 22;
-    for (let ci = 1; ci <= 11; ci++) {
-      const cell = subReelsRow.getCell(ci);
-      cell.fill = fl('FFEDE9FE');
-      cell.font = fn(true, 10, 'FF5B21B6');
-      cell.alignment = ci === 0 ? al('left', 'middle') : al('center', 'middle');
-      cell.border = bAll;
-      if (ci === 4 || ci === 5 || ci === 8) cell.numFmt = BRL;
-      if (ci === 6 || ci === 7 || ci === 9 || ci === 10 || ci === 11) cell.numFmt = NUM;
-    }
-    curRow++;
-  }
-  curRow++;
-
-  // ── SEÇÃO 4: CONSOLIDAÇÃO GERAL DO MÊS ──
-  const grandTotalSpent = spentAlc + spentEng + spentReels;
-  const grandTotalReach = reachAlc + reachEng + reachReels;
-  const grandTotalConv = convEng + convReels;
-  const grandTotalViews = viewsReels;
-
-  const totalHead = wsSeg.getRow(curRow);
-  totalHead.height = 24;
-  wsSeg.mergeCells(`A${curRow}:K${curRow}`);
-  const cTotH = wsSeg.getCell(`A${curRow}`);
-  cTotH.value = 'CONSOLIDAÇÃO TOTAL DO MÊS';
-  cTotH.fill = fl(C.orange);
-  cTotH.font = fn(true, 11, C.white);
-  cTotH.alignment = al('center', 'middle');
-  cTotH.border = bAll;
-  curRow++;
-
-  const totalRow = wsSeg.addRow([
-    'TOTAL GERAL CONSOLIDADO',
-    `${campaigns.length} campanhas`,
-    '-',
-    budgetAlc + budgetEng + budgetReels,
-    grandTotalSpent,
-    grandTotalReach,
-    grandTotalConv > 0 ? `${grandTotalConv} conv.` : '-',
-    grandTotalViews > 0 ? `${grandTotalViews} views` : '-',
-    linksEng + linksReels,
-    '-',
-    intEng + intReels
-  ]);
-  totalRow.height = 24;
-  for (let ci = 1; ci <= 11; ci++) {
-    const cell = totalRow.getCell(ci);
-    cell.fill = fl('FFFFEDD5');
-    cell.font = fn(true, 11, C.black);
-    cell.alignment = ci === 0 ? al('left', 'middle') : al('center', 'middle');
-    cell.border = bAll;
-    if (ci === 4 || ci === 5) cell.numFmt = BRL;
-    if (ci === 6 || ci === 9 || ci === 11) cell.numFmt = NUM;
-  }
-  curRow += 2;
-
-  // Raio-X dos Indicadores
-  const rLT = wsSeg.addRow(['RAIO-X DOS RESULTADOS - ENTENDA O QUE CADA INDICADOR MOSTRA']);
-  wsSeg.mergeCells(`A${rLT.number}:K${rLT.number}`);
-  const cLT = rLT.getCell(1);
-  cLT.fill = fl(C.orange);
-  cLT.font = fn(true, 11, C.white, 'Century Gothic');
-  cLT.alignment = al('center', 'middle');
-  rLT.height = 22;
-
-  const legs = [
-    'Alcance: É o número de contas únicas que a postagem alcançou. Ou seja, a quantidade de pessoas/contas que receberam o post em seu feed ou stories.',
-    'Engajamento: É o número de vezes que houve interação com a postagem de pessoas com maior probabilidade de interesse no produto ofertado (curtidas, comentários, compartilhamentos, salvamentos).',
-    'Conversas iniciadas: Quantidade de conversas de mensagem iniciadas no WhatsApp a partir do anúncio direto.',
-    'Visualização (ThruPlay): Número de vezes que o vídeo foi assistido por pelo menos 15 segundos ou até o fim, quando menor que esse tempo.',
-    'Cliques no link: Quantidade de cliques em links do anúncio que levaram os usuários a destinos externos (site, cardápio online ou WhatsApp).'
-  ];
-
-  legs.forEach((txt) => {
-    const rL = wsSeg.addRow([txt]);
-    wsSeg.mergeCells(`A${rL.number}:K${rL.number}`);
-    const cL = rL.getCell(1);
-    cL.fill = fl(C.white);
-    cL.font = fn(false, 9.5, C.dark);
-    cL.alignment = al('left', 'top', true);
-    cL.border = { bottom: bk, right: bk, left: bk };
-    rL.height = 26;
-  });
-
-  // ═════════════════════════════════════════════════════════════════════════
-  // ABA 3: RELATÓRIO GERAL CONSOLIDADO (Tabela Tradicional Completa)
-  // ═════════════════════════════════════════════════════════════════════════
-  const ws = wb.addWorksheet('Relatório Geral');
+  // Larguras completas das 17 colunas originais
   ws.columns = [
-    { width: 28 }, // Nome
-    { width: 14 }, // Formato
-    { width: 16 }, // Validade
-    { width: 15 }, // Investimento
-    { width: 15 }, // Valor gasto
-    { width: 14 }, // Alcance
-    { width: 15 }, // Engajamento
-    { width: 16 }, // Cliques no link
-    { width: 20 }, // Visualização (thruplay)
-    { width: 22 }, // CPM
-    { width: 22 }, // CPC
-    { width: 20 }, // Custo por thruplay
-    { width: 20 }, // Custo por interação
-    { width: 20 }, // Custo por conversa
-    { width: 12 }, // Filtro
-    { width: 12 }, // Cidade
-    { width: 20 }  // Conversas iniciadas
+    { width: 30 }, // 1. NOME DA AÇÃO
+    { width: 14 }, // 2. FORMATO
+    { width: 16 }, // 3. VALIDADE
+    { width: 15 }, // 4. INVESTIMENTO
+    { width: 15 }, // 5. VALOR GASTO
+    { width: 14 }, // 6. ALCANCE
+    { width: 15 }, // 7. ENGAJAMENTO
+    { width: 16 }, // 8. CLIQUES NO LINK
+    { width: 22 }, // 9. VISUALIZAÇÃO (THRUPLAY)
+    { width: 22 }, // 10. CUSTO POR 1.000 PESSOAS
+    { width: 22 }, // 11. CUSTO POR CLIQUES NO LINK
+    { width: 20 }, // 12. CUSTO POR THRUPLAY
+    { width: 20 }, // 13. CUSTO POR INTERAÇÃO
+    { width: 20 }, // 14. CUSTO POR CONVERSA
+    { width: 12 }, // 15. FILTRO
+    { width: 12 }, // 16. CIDADE
+    { width: 22 }  // 17. CONVERSAS INICIADAS
   ];
 
-  // Header Row 1: AÇÕES MENSAIS
-  ws.addRow(['AÇÕES MENSAIS']);
-  ws.mergeCells('A1:Q1');
-  const r1 = ws.getCell('A1');
-  r1.value = 'AÇÕES MENSAIS';
-  r1.fill = fl(C.orange);
-  r1.font = fn(true, 15, C.white);
-  r1.alignment = al('center', 'middle');
-  r1.border = { bottom: bk };
-  ws.getRow(1).height = 32;
-
-  // Header Row 2: Colunas
-  const HDR = [
+  const HDR_ORIGINAL = [
     'NOME DA AÇÃO',
     'FORMATO',
     'VALIDADE',
@@ -769,24 +331,442 @@ export async function exportToExcel(
     'CONVERSAS INICIADAS'
   ];
 
-  ws.addRow(HDR);
-  ws.getRow(2).height = 22;
-  HDR.forEach((_, ci) => {
-    const cell = ws.getRow(2).getCell(ci + 1);
+  let curRow = 1;
+
+  // Header Row 1: Título Geral AÇÕES MENSAIS
+  const rTop = ws.getRow(curRow);
+  rTop.height = 34;
+  ws.mergeCells(`A${curRow}:Q${curRow}`);
+  const cTop = ws.getCell(`A${curRow}`);
+  cTop.value = `AÇÕES MENSAIS • ${meta.cliente.toUpperCase()} (${meta.mes.toUpperCase()} ${meta.ano})`;
+  cTop.fill = fl(C.orange);
+  cTop.font = fn(true, 14, C.white);
+  cTop.alignment = al('center', 'middle');
+  cTop.border = { bottom: bk };
+  curRow++;
+
+  const renderHeaderRow = (rowIndex: number) => {
+    const headRow = ws.getRow(rowIndex);
+    headRow.height = 24;
+    HDR_ORIGINAL.forEach((h, ci) => {
+      const cell = headRow.getCell(ci + 1);
+      cell.value = h;
+      cell.fill = fl(C.gray1);
+      cell.font = fn(true, 9.5, C.black, 'Century Gothic');
+      cell.alignment = al('center', 'middle', true);
+      cell.border = bAll;
+    });
+  };
+
+  const renderCampaignRow = (r: CampaignRow, isReelsSection = false, isAlcanceSection = false) => {
+    const o = r.objective;
+    const isReels = isReelsSection || /^Reels/i.test(o);
+
+    // Engajamento não deve duplicar o alcance se for campanha de alcance
+    const isDuplicateReach = (isAlcanceSection || o === 'Alc') && r.reach > 0 && r.eng === r.reach;
+    const engVal = isDuplicateReach ? '-' : (r.eng > 0 ? r.eng : '-');
+
+    const vals = [
+      r.displayName || r.name,
+      r.format,
+      r.validity || '-',
+      r.budget > 0 ? r.budget : '-',
+      r.spent > 0 ? r.spent : '-',
+      r.reach > 0 ? r.reach : '-',
+      engVal,
+      r.links > 0 ? r.links : '-',
+      isReels && r.views > 0 ? r.views : '-',
+      (isAlcanceSection || o === 'Alc') && r.cpm > 0 ? r.cpm : '-',
+      r.cpc > 0 ? r.cpc : '-',
+      isReels && r.cThru > 0 ? r.cThru : '-',
+      r.cInt > 0 ? r.cInt : '-',
+      r.cConv > 0 ? r.cConv : '-',
+      r.filtro || '-',
+      r.cidade || '-',
+      r.conv > 0 ? r.conv : '-'
+    ];
+
+    const row = ws.addRow(vals);
+    row.height = 20;
+
+    vals.forEach((v, ci) => {
+      const cell = row.getCell(ci + 1);
+      cell.fill = fl(C.white);
+      cell.font = fn(false, 9.5, C.black);
+      cell.alignment = ci === 0 ? al('left', 'middle', true) : al('center', 'middle');
+      cell.border = bAll;
+
+      if (typeof v === 'number') {
+        if ([3, 4, 9, 10, 11, 12, 13].includes(ci)) cell.numFmt = BRL;
+        if ([5, 6, 7, 8, 16].includes(ci)) cell.numFmt = NUM;
+      }
+    });
+
+    curRow++;
+  };
+
+  const pillars = categorizeCampaignPillars(campaigns);
+
+  // ─────────────────────────────────────────────────────────
+  // SEÇÃO 1: CAMPANHAS DE ALCANCE (MARCA & DISTRIBUIÇÃO)
+  // ─────────────────────────────────────────────────────────
+  const sec1 = ws.getRow(curRow);
+  sec1.height = 26;
+  ws.mergeCells(`A${curRow}:Q${curRow}`);
+  const cSec1 = ws.getCell(`A${curRow}`);
+  cSec1.value = '1. CAMPANHAS DE ALCANCE (MARCA & DISTRIBUIÇÃO - PESSOAS ALCANÇADAS E CUSTO POR 1.000 CONTAS)';
+  cSec1.fill = fl(C.blueHead);
+  cSec1.font = fn(true, 11, C.white);
+  cSec1.alignment = al('left', 'middle');
+  cSec1.border = bAll;
+  curRow++;
+
+  renderHeaderRow(curRow);
+  curRow++;
+
+  let spentAlc = 0, budgetAlc = 0, reachAlc = 0;
+  if (pillars.alcance.length === 0) {
+    const emptyRow = ws.addRow(['Nenhuma campanha exclusiva de alcance no período.', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']);
+    emptyRow.height = 20;
+    for (let ci = 1; ci <= 17; ci++) {
+      emptyRow.getCell(ci).border = bAll;
+      emptyRow.getCell(ci).font = fn(false, 9, 'FF777777');
+    }
+    curRow++;
+  } else {
+    pillars.alcance.forEach((c) => {
+      spentAlc += c.spent;
+      budgetAlc += c.budget;
+      reachAlc += c.reach;
+      renderCampaignRow(c, false, true);
+    });
+
+    // Subtotal Alcance em todas as 17 colunas
+    const subAlcVals = [
+      'SUBTOTAL ALCANCE',
+      `${pillars.alcance.length} ações`,
+      '-',
+      budgetAlc > 0 ? budgetAlc : '-',
+      spentAlc > 0 ? spentAlc : '-',
+      reachAlc > 0 ? reachAlc : '-',
+      '-', '-', '-',
+      reachAlc > 0 && spentAlc > 0 ? (spentAlc / reachAlc) * 1000 : '-',
+      '-', '-', '-', '-', '-', '-', '-'
+    ];
+    const subAlcRow = ws.addRow(subAlcVals);
+    subAlcRow.height = 22;
+    subAlcVals.forEach((v, ci) => {
+      const cell = subAlcRow.getCell(ci + 1);
+      cell.fill = fl(C.blueSubBg);
+      cell.font = fn(true, 10, C.blueHead);
+      cell.alignment = ci === 0 ? al('left', 'middle') : al('center', 'middle');
+      cell.border = bAll;
+      if (ci === 3 || ci === 4 || ci === 9) cell.numFmt = BRL;
+      if (ci === 5) cell.numFmt = NUM;
+    });
+    curRow++;
+  }
+
+  // Linha espaçadora
+  const rSep1 = ws.addRow(Array(17).fill(''));
+  rSep1.height = 12;
+  for (let ci = 1; ci <= 17; ci++) rSep1.getCell(ci).fill = fl(C.separator);
+  curRow++;
+
+  // ─────────────────────────────────────────────────────────
+  // SEÇÃO 2: CAMPANHAS DE ENGAJAMENTO & TRÁFEGO
+  // ─────────────────────────────────────────────────────────
+  const sec2 = ws.getRow(curRow);
+  sec2.height = 26;
+  ws.mergeCells(`A${curRow}:Q${curRow}`);
+  const cSec2 = ws.getCell(`A${curRow}`);
+  cSec2.value = '2. CAMPANHAS DE ENGAJAMENTO E TRÁFEGO (CONVERSAS NO WHATSAPP, ALCANCE, CUSTO POR CONVERSA E CLIQUES)';
+  cSec2.fill = fl(C.greenHead);
+  cSec2.font = fn(true, 11, C.white);
+  cSec2.alignment = al('left', 'middle');
+  cSec2.border = bAll;
+  curRow++;
+
+  renderHeaderRow(curRow);
+  curRow++;
+
+  let spentEng = 0, budgetEng = 0, reachEng = 0, convEng = 0, linksEng = 0, intEng = 0;
+  if (pillars.engajamentoTrafego.length === 0) {
+    const emptyRow = ws.addRow(['Nenhuma campanha nesta categoria no período.', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']);
+    emptyRow.height = 20;
+    for (let ci = 1; ci <= 17; ci++) {
+      emptyRow.getCell(ci).border = bAll;
+      emptyRow.getCell(ci).font = fn(false, 9, 'FF777777');
+    }
+    curRow++;
+  } else {
+    pillars.engajamentoTrafego.forEach((c) => {
+      spentEng += c.spent;
+      budgetEng += c.budget;
+      reachEng += c.reach;
+      convEng += c.conv;
+      linksEng += c.links;
+      intEng += c.eng;
+      renderCampaignRow(c, false, false);
+    });
+
+    // Subtotal Engajamento & Tráfego em todas as 17 colunas
+    const subEngVals = [
+      'SUBTOTAL ENGAJAMENTO & TRÁFEGO',
+      `${pillars.engajamentoTrafego.length} ações`,
+      '-',
+      budgetEng > 0 ? budgetEng : '-',
+      spentEng > 0 ? spentEng : '-',
+      reachEng > 0 ? reachEng : '-',
+      intEng > 0 ? intEng : '-',
+      linksEng > 0 ? linksEng : '-',
+      '-',
+      '-',
+      linksEng > 0 && spentEng > 0 ? spentEng / linksEng : '-',
+      '-',
+      intEng > 0 && spentEng > 0 ? spentEng / intEng : '-',
+      convEng > 0 && spentEng > 0 ? spentEng / convEng : '-',
+      '-',
+      '-',
+      convEng > 0 ? convEng : '-'
+    ];
+    const subEngRow = ws.addRow(subEngVals);
+    subEngRow.height = 22;
+    subEngVals.forEach((v, ci) => {
+      const cell = subEngRow.getCell(ci + 1);
+      cell.fill = fl(C.greenSubBg);
+      cell.font = fn(true, 10, C.greenHead);
+      cell.alignment = ci === 0 ? al('left', 'middle') : al('center', 'middle');
+      cell.border = bAll;
+      if ([3, 4, 10, 12, 13].includes(ci)) cell.numFmt = BRL;
+      if ([5, 6, 7, 16].includes(ci)) cell.numFmt = NUM;
+    });
+    curRow++;
+  }
+
+  // Linha espaçadora
+  const rSep2 = ws.addRow(Array(17).fill(''));
+  rSep2.height = 12;
+  for (let ci = 1; ci <= 17; ci++) rSep2.getCell(ci).fill = fl(C.separator);
+  curRow++;
+
+  // ─────────────────────────────────────────────────────────
+  // SEÇÃO 3: CAMPANHAS DE REELS E VÍDEOS
+  // ─────────────────────────────────────────────────────────
+  const sec3 = ws.getRow(curRow);
+  sec3.height = 26;
+  ws.mergeCells(`A${curRow}:Q${curRow}`);
+  const cSec3 = ws.getCell(`A${curRow}`);
+  cSec3.value = '3. CAMPANHAS DE REELS E VÍDEOS (RETENÇÃO AUDIOVISUAL, ALCANCE, VISUALIZAÇÃO E CUSTO POR THRUPLAY)';
+  cSec3.fill = fl(C.purpleHead);
+  cSec3.font = fn(true, 11, C.white);
+  cSec3.alignment = al('left', 'middle');
+  cSec3.border = bAll;
+  curRow++;
+
+  renderHeaderRow(curRow);
+  curRow++;
+
+  let spentReels = 0, budgetReels = 0, reachReels = 0, viewsReels = 0, convReels = 0, linksReels = 0, intReels = 0;
+  if (pillars.reels.length === 0) {
+    const emptyRow = ws.addRow(['Nenhuma campanha de Reels no período.', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']);
+    emptyRow.height = 20;
+    for (let ci = 1; ci <= 17; ci++) {
+      emptyRow.getCell(ci).border = bAll;
+      emptyRow.getCell(ci).font = fn(false, 9, 'FF777777');
+    }
+    curRow++;
+  } else {
+    pillars.reels.forEach((c) => {
+      spentReels += c.spent;
+      budgetReels += c.budget;
+      reachReels += c.reach;
+      viewsReels += c.views;
+      convReels += c.conv;
+      linksReels += c.links;
+      intReels += c.eng;
+      renderCampaignRow(c, true, false);
+    });
+
+    // Subtotal Reels em todas as 17 colunas
+    const subReelsVals = [
+      'SUBTOTAL REELS & VÍDEO',
+      `${pillars.reels.length} ações`,
+      '-',
+      budgetReels > 0 ? budgetReels : '-',
+      spentReels > 0 ? spentReels : '-',
+      reachReels > 0 ? reachReels : '-',
+      intReels > 0 ? intReels : '-',
+      linksReels > 0 ? linksReels : '-',
+      viewsReels > 0 ? viewsReels : '-',
+      '-',
+      '-',
+      viewsReels > 0 && spentReels > 0 ? spentReels / viewsReels : '-',
+      '-',
+      '-',
+      '-',
+      '-',
+      convReels > 0 ? convReels : '-'
+    ];
+    const subReelsRow = ws.addRow(subReelsVals);
+    subReelsRow.height = 22;
+    subReelsVals.forEach((v, ci) => {
+      const cell = subReelsRow.getCell(ci + 1);
+      cell.fill = fl(C.purpleSubBg);
+      cell.font = fn(true, 10, C.purpleHead);
+      cell.alignment = ci === 0 ? al('left', 'middle') : al('center', 'middle');
+      cell.border = bAll;
+      if ([3, 4, 11].includes(ci)) cell.numFmt = BRL;
+      if ([5, 6, 7, 8, 16].includes(ci)) cell.numFmt = NUM;
+    });
+    curRow++;
+  }
+
+  // Linha espaçadora
+  const rSep3 = ws.addRow(Array(17).fill(''));
+  rSep3.height = 14;
+  for (let ci = 1; ci <= 17; ci++) rSep3.getCell(ci).fill = fl(C.separator);
+  curRow++;
+
+  // ─────────────────────────────────────────────────────────
+  // CONSOLIDAÇÃO TOTAL DO MÊS (17 COLUNAS COMPLETAS)
+  // ─────────────────────────────────────────────────────────
+  const grandTotalSpent = spentAlc + spentEng + spentReels;
+  const grandTotalBudget = budgetAlc + budgetEng + budgetReels;
+  const grandTotalReach = reachAlc + reachEng + reachReels;
+  const grandTotalConv = convEng + convReels;
+  const grandTotalViews = viewsReels;
+  const grandTotalLinks = linksEng + linksReels;
+  const grandTotalInt = intEng + intReels;
+
+  const totalHead = ws.getRow(curRow);
+  totalHead.height = 26;
+  ws.mergeCells(`A${curRow}:Q${curRow}`);
+  const cTotH = ws.getCell(`A${curRow}`);
+  cTotH.value = 'CONSOLIDAÇÃO GERAL DE TODOS OS PILARES (TOTAIS DO PERÍODO)';
+  cTotH.fill = fl(C.orange);
+  cTotH.font = fn(true, 11, C.white);
+  cTotH.alignment = al('center', 'middle');
+  cTotH.border = bAll;
+  curRow++;
+
+  const grandVals = [
+    'TOTAL GERAL CONSOLIDADO',
+    `${campaigns.length} campanhas`,
+    '-',
+    grandTotalBudget > 0 ? grandTotalBudget : '-',
+    grandTotalSpent > 0 ? grandTotalSpent : '-',
+    grandTotalReach > 0 ? grandTotalReach : '-',
+    grandTotalInt > 0 ? grandTotalInt : '-',
+    grandTotalLinks > 0 ? grandTotalLinks : '-',
+    grandTotalViews > 0 ? grandTotalViews : '-',
+    grandTotalReach > 0 && grandTotalSpent > 0 ? (grandTotalSpent / grandTotalReach) * 1000 : '-',
+    grandTotalLinks > 0 && grandTotalSpent > 0 ? grandTotalSpent / grandTotalLinks : '-',
+    grandTotalViews > 0 && grandTotalSpent > 0 ? grandTotalSpent / grandTotalViews : '-',
+    '-',
+    grandTotalConv > 0 && grandTotalSpent > 0 ? grandTotalSpent / grandTotalConv : '-',
+    '-',
+    '-',
+    grandTotalConv > 0 ? grandTotalConv : '-'
+  ];
+
+  const totalRow = ws.addRow(grandVals);
+  totalRow.height = 24;
+  grandVals.forEach((v, ci) => {
+    const cell = totalRow.getCell(ci + 1);
+    cell.fill = fl(C.totalBg);
+    cell.font = fn(true, 10.5, C.black);
+    cell.alignment = ci === 0 ? al('left', 'middle') : al('center', 'middle');
+    cell.border = bAll;
+    if ([3, 4, 9, 10, 11, 13].includes(ci)) cell.numFmt = BRL;
+    if ([5, 6, 7, 8, 16].includes(ci)) cell.numFmt = NUM;
+  });
+  curRow += 2;
+
+  // Raio-X dos Resultados
+  const rLT = ws.addRow(['RAIO-X DOS RESULTADOS - ENTENDA O QUE CADA INDICADOR MOSTRA']);
+  ws.mergeCells(`A${rLT.number}:I${rLT.number}`);
+  const cLT = rLT.getCell(1);
+  cLT.fill = fl(C.orange);
+  cLT.font = fn(true, 11, C.white, 'Century Gothic');
+  cLT.alignment = al('center', 'middle');
+  rLT.height = 22;
+
+  const legs = [
+    'Alcance: É o número de contas únicas que a postagem alcançou. Ou seja, a quantidade de pessoas/contas que receberam o post em seu feed ou stories.',
+    'Engajamento: É o número de vezes que houve interação com a postagem de pessoas com maior probabilidade de interesse no produto ofertado (curtidas, comentários, compartilhamentos, salvamentos).',
+    'Conversas iniciadas: Quantidade de conversas de mensagem iniciadas no WhatsApp a partir do anúncio direto.',
+    'Visualização (ThruPlay): Número de vezes que o vídeo foi assistido por pelo menos 15 segundos ou até o fim, quando menor que esse tempo.',
+    'Cliques no link: Quantidade de cliques em links do anúncio que levaram os usuários a destinos externos (site, cardápio online ou WhatsApp).'
+  ];
+
+  legs.forEach((txt) => {
+    const rL = ws.addRow([txt]);
+    ws.mergeCells(`A${rL.number}:I${rL.number}`);
+    const cL = rL.getCell(1);
+    cL.fill = fl(C.white);
+    cL.font = fn(false, 9.5, C.dark);
+    cL.alignment = al('left', 'top', true);
+    cL.border = { bottom: bk, right: bk, left: bk };
+    rL.height = 26;
+  });
+
+  const rSepFoot = ws.addRow(Array(9).fill(''));
+  rSepFoot.height = 10;
+  for (let ci = 1; ci <= 9; ci++) {
+    rSepFoot.getCell(ci).border = { bottom: { style: 'double', color: { argb: C.black } } };
+    rSepFoot.getCell(ci).fill = fl(C.white);
+  }
+
+  const fnTxt =
+    '*Algumas colunas podem não ser preenchidas, pois variam de acordo com o tipo de impulsionamento e com as métricas disponíveis em cada campanha. Além disso, em alguns casos, a plataforma pode não utilizar toda a verba prevista, seja por limitação de público, concorrência no leilão de anúncios, baixo engajamento ou instabilidades na entrega. Por isso, o valor efetivamente considerado como consumido é o da coluna "Valor gasto".';
+
+  const rFn = ws.addRow([fnTxt]);
+  ws.mergeCells(`A${rFn.number}:I${rFn.number}`);
+  const cFn = rFn.getCell(1);
+  cFn.fill = fl(C.white);
+  cFn.font = fn(false, 9.5, C.black, 'Century Gothic');
+  cFn.alignment = al('left', 'top', true);
+  cFn.border = {
+    bottom: { style: 'double', color: { argb: C.black } },
+    right: { style: 'double', color: { argb: C.black } },
+    left: { style: 'double', color: { argb: C.black } }
+  };
+  rFn.height = 54;
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // ABA 3: CRONOLÓGICO (Planilha contínua ordenada por data)
+  // ═════════════════════════════════════════════════════════════════════════
+  const wsCron = wb.addWorksheet('Visão Cronológica');
+  wsCron.columns = ws.columns;
+
+  wsCron.addRow(['AÇÕES MENSAIS (ORDEM CRONOLÓGICA)']);
+  wsCron.mergeCells('A1:Q1');
+  const r1Cron = wsCron.getCell('A1');
+  r1Cron.value = 'AÇÕES MENSAIS (ORDEM CRONOLÓGICA)';
+  r1Cron.fill = fl(C.orange);
+  r1Cron.font = fn(true, 14, C.white);
+  r1Cron.alignment = al('center', 'middle');
+  r1Cron.border = { bottom: bk };
+  wsCron.getRow(1).height = 30;
+
+  const rHeadCron = wsCron.addRow(HDR_ORIGINAL);
+  rHeadCron.height = 22;
+  HDR_ORIGINAL.forEach((_, ci) => {
+    const cell = rHeadCron.getCell(ci + 1);
     cell.fill = fl(C.gray1);
-    cell.font = fn(true, 10, C.black, 'Century Gothic');
+    cell.font = fn(true, 9.5, C.black, 'Century Gothic');
     cell.alignment = al('center', 'middle', true);
     cell.border = bAll;
   });
 
   let lastDateKeyXl = '';
-
   campaigns.forEach((r) => {
     const curDate = r.sortDate ? new Date(r.sortDate) : null;
     const curDateKey = curDate ? curDate.getTime() : 'none';
 
     if (lastDateKeyXl !== '' && curDateKey !== lastDateKeyXl) {
-      const rBlank = ws.addRow(Array(17).fill(''));
+      const rBlank = wsCron.addRow(Array(17).fill(''));
       rBlank.height = 12;
       for (let ci = 1; ci <= 17; ci++) {
         rBlank.getCell(ci).fill = fl(C.separator);
@@ -797,6 +777,8 @@ export async function exportToExcel(
 
     const o = r.objective;
     const isReelsXl = /^Reels/i.test(o);
+    const isAlcanceRow = o === 'Alc';
+    const isDuplicateReach = isAlcanceRow && r.reach > 0 && r.eng === r.reach;
 
     const vals = [
       r.displayName || r.name,
@@ -805,26 +787,26 @@ export async function exportToExcel(
       r.budget > 0 ? r.budget : '-',
       r.spent > 0 ? r.spent : '-',
       r.reach > 0 ? r.reach : '-',
-      (o === 'Eng' || o === 'EngLink' || o === 'TrafLink' || o === 'ReelsEng' || o === 'ReelsEngLink' || o === 'ReelsTrafLink' || o === 'ReelsEngWhats' || o === 'ReelsTrafWhats') && r.eng > 0 ? r.eng : '-',
-      (o === 'EngLink' || o === 'TrafLink' || o === 'ReelsEngLink' || o === 'ReelsTrafLink') && r.links > 0 ? r.links : '-',
+      isDuplicateReach ? '-' : (r.eng > 0 ? r.eng : '-'),
+      r.links > 0 ? r.links : '-',
       isReelsXl && r.views > 0 ? r.views : '-',
-      o === 'Alc' && r.cpm > 0 ? r.cpm : '-',
-      (o === 'EngLink' || o === 'TrafLink' || o === 'ReelsEngLink' || o === 'ReelsTrafLink') && r.cpc > 0 ? r.cpc : '-',
-      (o === 'ReelsAlc' || o === 'ReelsEng' || o === 'ReelsEngLink' || o === 'ReelsTrafLink') && r.cThru > 0 ? r.cThru : '-',
-      (o === 'Eng' || o === 'ReelsEng') && r.cInt > 0 ? r.cInt : '-',
-      (o === 'EngWhats' || o === 'TrafWhats' || o === 'ReelsEngWhats' || o === 'ReelsTrafWhats') && r.cConv > 0 ? r.cConv : '-',
-      '-',
-      '-',
-      (o === 'EngWhats' || o === 'TrafWhats' || o === 'ReelsEngWhats' || o === 'ReelsTrafWhats') && r.conv > 0 ? r.conv : '-'
+      isAlcanceRow && r.cpm > 0 ? r.cpm : '-',
+      r.cpc > 0 ? r.cpc : '-',
+      isReelsXl && r.cThru > 0 ? r.cThru : '-',
+      r.cInt > 0 ? r.cInt : '-',
+      r.cConv > 0 ? r.cConv : '-',
+      r.filtro || '-',
+      r.cidade || '-',
+      r.conv > 0 ? r.conv : '-'
     ];
 
-    const row = ws.addRow(vals);
+    const row = wsCron.addRow(vals);
     row.height = 20;
 
     vals.forEach((v, ci) => {
       const cell = row.getCell(ci + 1);
       cell.fill = fl(C.white);
-      cell.font = fn(false, 10, C.black);
+      cell.font = fn(false, 9.5, C.black);
       cell.alignment = ci === 0 ? al('left', 'middle', true) : al('center', 'middle');
       cell.border = bAll;
 
