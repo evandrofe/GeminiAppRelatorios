@@ -1,0 +1,6 @@
+{
+  "name": "Relatório Meta Ads & Gemini AI",
+  "description": "Aplicativo profissional para processar exportações do Meta Ads, classificação inteligente com IA Gemini, capa social, relatórios executivos e exportação formatada em Excel.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
