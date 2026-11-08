@@ -33,6 +33,8 @@ import {
   categorizeCampaignPillars,
   extractDateFromName
 } from '../lib/metaAdsParser';
+import { BudgetDonutChart } from './BudgetDonutChart';
+import { ReporteiPresentationView } from './ReporteiPresentationView';
 
 interface StepReportProps {
   meta: ReportMeta;
@@ -41,6 +43,8 @@ interface StepReportProps {
   onExportExcel: () => void;
   isExportingExcel: boolean;
   onBackToCapa: () => void;
+  isPresentationMode?: boolean;
+  onTogglePresentationMode?: () => void;
 }
 
 export const StepReport: React.FC<StepReportProps> = ({
@@ -50,8 +54,10 @@ export const StepReport: React.FC<StepReportProps> = ({
   onExportExcel,
   isExportingExcel,
   onBackToCapa,
+  isPresentationMode = false,
+  onTogglePresentationMode,
 }) => {
-  const [activeTab, setActiveTab] = useState<'segmented' | 'table' | 'dashboard' | 'ai' | 'chat'>('segmented');
+  const [activeTab, setActiveTab] = useState<'reportei' | 'segmented' | 'table' | 'dashboard' | 'ai' | 'chat'>('reportei');
   const [aiAnalysis, setAiAnalysis] = useState<GeminiAnalysisResult | null>(null);
   const [aiNotice, setAiNotice] = useState<string | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
@@ -283,6 +289,17 @@ export const StepReport: React.FC<StepReportProps> = ({
             <span>{isExportingExcel ? 'Gerando Planilha...' : 'Baixar Excel (.xlsx)'}</span>
           </button>
 
+          {/* Client Presentation Mode Toggle */}
+          {onTogglePresentationMode && (
+            <button
+              onClick={onTogglePresentationMode}
+              className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer"
+              title="Alternar para o Modo Apresentação Limpa para o Cliente"
+            >
+              <span>{isPresentationMode ? 'Sair da Apresentação' : 'Ver como Cliente (Apresentação)'}</span>
+            </button>
+          )}
+
           {/* Dedicated PDF Download Button */}
           <button
             onClick={handlePrintPdf}
@@ -298,6 +315,19 @@ export const StepReport: React.FC<StepReportProps> = ({
       {/* View Mode Navigation Tabs */}
       <div className="flex items-center gap-2 mb-6 border-b border-[#2b2d33] pb-3 overflow-x-auto no-print">
         <button
+          onClick={() => setActiveTab('reportei')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            activeTab === 'reportei'
+              ? 'bg-amber-500 text-neutral-950 shadow-md font-extrabold'
+              : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
+          }`}
+        >
+          <Sparkles className={`w-4 h-4 ${activeTab === 'reportei' ? 'text-neutral-950' : 'text-amber-400'}`} />
+          <span>Visão Reportei (Apresentação Cliente)</span>
+          <span className="text-[10px] bg-black/20 px-1.5 py-0.5 rounded-full font-bold">Destaque</span>
+        </button>
+
+        <button
           onClick={() => setActiveTab('segmented')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             activeTab === 'segmented'
@@ -307,7 +337,7 @@ export const StepReport: React.FC<StepReportProps> = ({
         >
           <Layers className="w-4 h-4" />
           <span>Padrão Segmentado por Pilar (Gemini)</span>
-          <span className="text-[10px] bg-black/20 px-1.5 py-0.5 rounded-full font-bold">Novo</span>
+          <span className="text-[10px] bg-black/20 px-1.5 py-0.5 rounded-full font-bold">17 Colunas</span>
         </button>
 
         <button
@@ -364,6 +394,24 @@ export const StepReport: React.FC<StepReportProps> = ({
       </div>
 
       {/* ======================================================================== */}
+      {/* TAB 0: REPORTEI EXECUTIVE CLIENT PRESENTATION VIEW */}
+      {/* ======================================================================== */}
+      {activeTab === 'reportei' && (
+        <ReporteiPresentationView
+          meta={meta}
+          campaigns={campaigns}
+          capa={capa}
+          aiAnalysis={aiAnalysis}
+          onGenerateAi={handleGenerateAiAnalysis}
+          isGeneratingAi={isGeneratingAi}
+          onExportExcel={onExportExcel}
+          isExportingExcel={isExportingExcel}
+          isPresentationMode={isPresentationMode}
+          onTogglePresentationMode={onTogglePresentationMode}
+        />
+      )}
+
+      {/* ======================================================================== */}
       {/* TAB: REFINED GEMINI SEGMENTED PRESENTATION (DEFAULT FOR SCREEN AND PDF) */}
       {/* ======================================================================== */}
       {(activeTab === 'segmented' || typeof window !== 'undefined') && (
@@ -410,6 +458,14 @@ export const StepReport: React.FC<StepReportProps> = ({
             <span className="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded-full uppercase">
               17 Colunas Completas
             </span>
+          </div>
+
+          {/* Executive Donut Chart: Distribuição de Orçamento por Objetivo */}
+          <div className="print-avoid-break">
+            <BudgetDonutChart
+              campaigns={campaigns}
+              title="Distribuição do Orçamento por Objetivo Estratégico"
+            />
           </div>
 
           {/* ═══════════════════════════════════════════════════════════════ */}
@@ -1148,6 +1204,12 @@ export const StepReport: React.FC<StepReportProps> = ({
               <p className="text-[11px] text-neutral-500 mt-1">Custo Médio: {custoMedioView > 0 ? fmtBRL(custoMedioView) : '-'}</p>
             </div>
           </div>
+
+          {/* Gráfico de Rosca Executivo Recharts: Orçamento por Objetivo */}
+          <BudgetDonutChart
+            campaigns={campaigns}
+            title="Distribuição do Orçamento por Objetivo de Campanha"
+          />
         </div>
       )}
 

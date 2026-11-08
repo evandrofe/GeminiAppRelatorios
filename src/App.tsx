@@ -45,8 +45,15 @@ export default function App() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isAiClassifying, setIsAiClassifying] = useState(false);
   const [isExportingExcel, setIsExportingExcel] = useState(false);
+  const [isPresentationMode, setIsPresentationMode] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('mode') === 'client' || window.location.hash.includes('client');
+    }
+    return false;
+  });
 
-  // Restore saved state from local storage on first mount
+  // Restore saved state from local storage or initialize demo on client mode
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -58,11 +65,18 @@ export default function App() {
           if (parsed.capa) setCapa(parsed.capa);
           if (parsed.currentStep) setCurrentStep(parsed.currentStep);
         }
+      } else if (isPresentationMode) {
+        // Automatically provide rich demo dataset if shared directly
+        const sample = getSampleDemoData();
+        setMeta(sample.meta);
+        setCampaigns(sample.rows);
+        setCapa(sample.capa);
+        setCurrentStep(4);
       }
     } catch (e) {
       console.warn('Erro ao restaurar dados salvos no navegador:', e);
     }
-  }, []);
+  }, [isPresentationMode]);
 
   // Save state on changes
   useEffect(() => {
@@ -247,19 +261,38 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#0a0b0d] text-neutral-100 flex flex-col font-sans selection:bg-amber-500 selection:text-neutral-950">
-      <Header
-        currentStep={currentStep}
-        onSelectStep={setCurrentStep}
-        meta={meta}
-        hasData={campaigns.length > 0}
-        onExportExcel={handleExportExcel}
-        isExportingExcel={isExportingExcel}
-        onReset={handleReset}
-        onLoadDemo={handleLoadDemo}
-      />
+      {!isPresentationMode && (
+        <Header
+          currentStep={currentStep}
+          onSelectStep={setCurrentStep}
+          meta={meta}
+          hasData={campaigns.length > 0}
+          onExportExcel={handleExportExcel}
+          isExportingExcel={isExportingExcel}
+          onReset={handleReset}
+          onLoadDemo={handleLoadDemo}
+        />
+      )}
+
+      {isPresentationMode && (
+        <div className="bg-[#121316] border-b border-[#2b2d33] px-6 py-2.5 flex items-center justify-between text-xs text-neutral-400 no-print">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-white font-bold">Modo Apresentação do Cliente Ativo</span>
+            <span className="hidden sm:inline text-neutral-500">•</span>
+            <span className="hidden sm:inline">Exibindo relatório interativo de {meta?.cliente || 'Cliente'}</span>
+          </div>
+          <button
+            onClick={() => setIsPresentationMode(false)}
+            className="px-3 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-amber-300 border border-neutral-700 text-xs font-semibold cursor-pointer transition-colors"
+          >
+            Sair do Modo Apresentação (Voltar ao Editor)
+          </button>
+        </div>
+      )}
 
       <main className="flex-1 pb-16">
-        {currentStep === 1 && (
+        {(!isPresentationMode && currentStep === 1) && (
           <StepUpload
             onFileUpload={handleFileUpload}
             onLoadDemo={handleLoadDemo}
@@ -268,7 +301,7 @@ export default function App() {
           />
         )}
 
-        {currentStep === 2 && meta && (
+        {(!isPresentationMode && currentStep === 2 && meta) && (
           <StepReview
             meta={meta}
             campaigns={campaigns}
@@ -281,7 +314,7 @@ export default function App() {
           />
         )}
 
-        {currentStep === 3 && meta && (
+        {(!isPresentationMode && currentStep === 3 && meta) && (
           <StepCapa
             meta={meta}
             capa={capa}
@@ -291,7 +324,7 @@ export default function App() {
           />
         )}
 
-        {currentStep === 4 && meta && (
+        {(isPresentationMode || (currentStep === 4 && meta)) && meta && (
           <StepReport
             meta={meta}
             campaigns={campaigns}
@@ -299,10 +332,12 @@ export default function App() {
             onExportExcel={handleExportExcel}
             isExportingExcel={isExportingExcel}
             onBackToCapa={() => setCurrentStep(3)}
+            isPresentationMode={isPresentationMode}
+            onTogglePresentationMode={() => setIsPresentationMode(!isPresentationMode)}
           />
         )}
 
-        {currentStep === 5 && (
+        {(!isPresentationMode && currentStep === 5) && (
           <StepConfig
             config={config}
             onSaveConfig={handleSaveConfig}
