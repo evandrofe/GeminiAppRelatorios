@@ -8,6 +8,12 @@
   }
 }
 
+@media screen {
+  .print-only {
+    display: none !important;
+  }
+}
+
 @media print {
   @page {
     size: A4 landscape;
@@ -23,14 +29,22 @@
   header,
   footer,
   button,
-  .no-print {
+  nav,
+  .no-print,
+  .screen-only {
     display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
   }
 
   body {
     background-color: #ffffff !important;
     color: #111827 !important;
     font-size: 10px !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   main {
@@ -41,6 +55,7 @@
 
   .print-page-break {
     page-break-before: always;
+    break-before: page;
   }
 
   .print-avoid-break {

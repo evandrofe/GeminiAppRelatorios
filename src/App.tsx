@@ -21,6 +21,7 @@ import {
   sortCampaignRows
 } from './lib/metaAdsParser';
 import { exportToExcel } from './lib/excelExport';
+import { SimpleFunctionalPdfReport } from './components/SimpleFunctionalPdfReport';
 
 const STORAGE_KEY = 'relatorio_ads_gemini_state_v1';
 const CONFIG_STORAGE_KEY = 'relatorio_ads_gemini_config_v1';
@@ -374,6 +375,17 @@ export default function App() {
             onSaveConfig={handleSaveConfig}
             onResetConfig={handleResetConfig}
           />
+        )}
+
+        {/* Impressão Global do PDF Simples e Funcional */}
+        {(meta && campaigns.length > 0 && currentStep !== 4 && !isPresentationMode) && (
+          <div className="print-only">
+            <SimpleFunctionalPdfReport
+              meta={meta}
+              campaigns={campaigns}
+              capa={capa}
+            />
+          </div>
         )}
       </main>
 

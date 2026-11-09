@@ -21,7 +21,9 @@ import {
   Lightbulb,
   Layers,
   ArrowRight,
-  MapPin
+  MapPin,
+  Eye,
+  X
 } from 'lucide-react';
 import {
   CampaignRow,
@@ -37,6 +39,8 @@ import {
 import { BudgetDonutChart } from './BudgetDonutChart';
 import { ReporteiPresentationView } from './ReporteiPresentationView';
 import { UnifiedTraditionalTable } from './UnifiedTraditionalTable';
+import { SimpleFunctionalPdfReport } from './SimpleFunctionalPdfReport';
+import { CapaModelView } from './CapaModelView';
 
 interface StepReportProps {
   meta: ReportMeta;
@@ -74,6 +78,7 @@ export const StepReport: React.FC<StepReportProps> = ({
   const [batchFiltro, setBatchFiltro] = useState('');
   const [batchCidade, setBatchCidade] = useState('');
   const [batchSegmentedSuccess, setBatchSegmentedSuccess] = useState(false);
+  const [showPdfPreview, setShowPdfPreview] = useState(false);
 
   const handleApplyBatchSegmented = () => {
     if (!batchFiltro.trim() && !batchCidade.trim()) return;
@@ -260,8 +265,64 @@ export const StepReport: React.FC<StepReportProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto py-6 px-4">
-      {/* Top Banner & Tab Controls */}
-      <div className="bg-[#141518] border border-[#2b2d33] rounded-2xl p-6 mb-6 shadow-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 no-print">
+      {/* Modal de Prévia do PDF Simples e Funcional */}
+      {showPdfPreview && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 overflow-y-auto no-print">
+          <div className="bg-[#141518] border border-[#2b2d33] rounded-2xl max-w-6xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
+            <div className="p-4 bg-[#0e0f12] border-b border-[#26282f] flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                  <Printer className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    <span>Prévia do Relatório PDF Simples & Funcional</span>
+                    <span className="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full font-semibold">
+                      Padrão Oficial
+                    </span>
+                  </h3>
+                  <p className="text-[11px] text-neutral-400">
+                    Capa Social, Resumo Executivo Simples, Tabelas de Custos dos Impulsionamentos e Legendas
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPdfPreview(false);
+                    setTimeout(() => window.print(), 150);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-lg shadow-blue-950/40 transition-all"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span>Imprimir / Salvar PDF</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowPdfPreview(false)}
+                  className="p-2 rounded-xl bg-neutral-800 text-neutral-400 hover:text-white transition-all cursor-pointer"
+                  title="Fechar prévia"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-neutral-200">
+              <SimpleFunctionalPdfReport
+                meta={meta}
+                campaigns={campaigns}
+                capa={capa}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Screen Interactive Workspace */}
+      <div className="screen-only">
+        {/* Top Banner & Tab Controls */}
+        <div className="bg-[#141518] border border-[#2b2d33] rounded-2xl p-6 mb-6 shadow-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 no-print">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30">
@@ -325,11 +386,21 @@ export const StepReport: React.FC<StepReportProps> = ({
             </button>
           )}
 
+          {/* Prévia do Relatório PDF Simples e Funcional */}
+          <button
+            onClick={() => setShowPdfPreview(true)}
+            className="px-3.5 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 hover:border-amber-400/50 font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-md"
+            title="Visualizar modelo funcional do PDF simples antes de imprimir"
+          >
+            <Eye className="w-4 h-4 text-amber-400" />
+            <span>Prévia do PDF</span>
+          </button>
+
           {/* Dedicated PDF Download Button */}
           <button
             onClick={handlePrintPdf}
             className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs transition-all shadow-md shadow-blue-950/40 flex items-center gap-2 cursor-pointer"
-            title="Baixar ou Imprimir o PDF Executivo formatado no padrão Gemini"
+            title="Baixar ou Imprimir o PDF Funcional (Capa, Tabelas de Custos e Legendas)"
           >
             <Printer className="w-4 h-4" />
             <span>Baixar / Imprimir PDF</span>
@@ -446,37 +517,25 @@ export const StepReport: React.FC<StepReportProps> = ({
       {/* ======================================================================== */}
       {/* TAB: REFINED GEMINI SEGMENTED PRESENTATION (DEFAULT FOR SCREEN AND PDF) */}
       {/* ======================================================================== */}
-      {(activeTab === 'segmented' || typeof window !== 'undefined') && (
-        <div className={`space-y-8 ${activeTab !== 'segmented' ? 'hidden print:block' : ''}`}>
-          {/* PRINT-ONLY HEADER */}
-          <div className="hidden print:block mb-6 border-b border-neutral-300 pb-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-xl font-black text-neutral-900 tracking-tight uppercase">
-                  Relatório Executivo de Impulsionamento Meta Ads
-                </h1>
-                <p className="text-xs text-neutral-600 mt-0.5">
-                  Cliente: <strong className="text-neutral-900">{meta.cliente}</strong> • Período:{' '}
-                  <strong className="text-neutral-900">{meta.mes} {meta.ano}</strong>
-                </p>
-              </div>
-              <div className="text-right text-[10px] text-neutral-500">
-                <span>Processado com inteligência artificial Gemini</span>
-                <span className="block">{new Date().toLocaleDateString('pt-BR')}</span>
-              </div>
-            </div>
-
-            {/* Print Cover demographic summary */}
-            {(capa.fb.seguidores || capa.ig.seguidores) && (
-              <div className="grid grid-cols-2 gap-3 mt-4 text-[10px] bg-neutral-100 p-2.5 rounded border border-neutral-200">
-                <div>
-                  <strong className="text-blue-900 uppercase">Facebook:</strong> {capa.fb.seguidores || '—'} seguidores • Alcance: {capa.fb.alcancadas || '—'} • Visitas: {capa.fb.visitas || '—'} • Faixa: {capa.fb.faixa || '—'}
+      {activeTab === 'segmented' && (
+        <div className="space-y-8">
+          {/* Capa Social Oficial Incorporada */}
+          <div className="no-print">
+            <details className="bg-[#181a20] border border-[#2b2d33] rounded-2xl overflow-hidden shadow-lg group">
+              <summary className="p-4 cursor-pointer flex items-center justify-between text-xs font-bold text-amber-300 hover:text-white transition-colors select-none">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#FBBC04]" />
+                  <span>Ver Capa Social Oficial de Redes Sociais (Identidade do Modelo)</span>
+                  <span className="text-[10px] bg-amber-500/20 text-amber-300 font-semibold px-2 py-0.5 rounded-full lowercase">
+                    clique para expandir
+                  </span>
                 </div>
-                <div>
-                  <strong className="text-rose-900 uppercase">Instagram:</strong> {capa.ig.seguidores || '—'} seguidores • Alcance: {capa.ig.alcancadas || '—'} • Visitas: {capa.ig.visitas || '—'} • Faixa: {capa.ig.faixa || '—'}
-                </div>
+                <span className="text-neutral-500 text-xs group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div className="p-4 pt-0 border-t border-[#26282f] bg-[#0f1013]">
+                <CapaModelView meta={meta} capa={capa} />
               </div>
-            )}
+            </details>
           </div>
 
           {/* Notice Banner */}
@@ -1452,6 +1511,16 @@ export const StepReport: React.FC<StepReportProps> = ({
           </form>
         </div>
       )}
+      </div>
+
+      {/* Relatório PDF Funcional Oficial (Renderizado exclusivamente durante a impressão / PDF) */}
+      <div className="print-only">
+        <SimpleFunctionalPdfReport
+          meta={meta}
+          campaigns={campaigns}
+          capa={capa}
+        />
+      </div>
     </div>
   );
 };

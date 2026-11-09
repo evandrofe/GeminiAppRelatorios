@@ -36,6 +36,7 @@ import {
 import { CampaignRow, CapaData, GeminiAnalysisResult, ReportMeta } from '../types';
 import { BudgetDonutChart } from './BudgetDonutChart';
 import { exportInteractiveWebReport } from '../lib/interactiveHtmlExport';
+import { CapaModelView } from './CapaModelView';
 
 interface ReporteiPresentationViewProps {
   meta: ReportMeta;
@@ -241,6 +242,25 @@ export const ReporteiPresentationView: React.FC<ReporteiPresentationViewProps> =
               </button>
             )}
           </div>
+        </div>
+
+        {/* Capa Social Oficial de Redes Sociais Integrada */}
+        <div className="mt-6 no-print">
+          <details className="bg-neutral-900/60 border border-neutral-800/80 rounded-2xl overflow-hidden group">
+            <summary className="p-3.5 sm:p-4 cursor-pointer flex items-center justify-between text-xs font-bold text-amber-300 hover:text-white transition-colors select-none">
+              <div className="flex items-center gap-2.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#FBBC04]" />
+                <span>Ver Capa Social Oficial (Facebook & Instagram • Modelo Institucional)</span>
+                <span className="text-[10px] bg-amber-500/20 text-amber-300 font-semibold px-2 py-0.5 rounded-full lowercase">
+                  clique para ver a capa
+                </span>
+              </div>
+              <span className="text-neutral-500 text-xs group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <div className="p-3 sm:p-5 pt-0 bg-neutral-950">
+              <CapaModelView meta={meta} capa={capa} />
+            </div>
+          </details>
         </div>
 
         {/* ======================================================================== */}

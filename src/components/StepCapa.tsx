@@ -14,6 +14,7 @@ import {
   Share2
 } from 'lucide-react';
 import { CapaData, ReportMeta } from '../types';
+import { CapaModelView } from './CapaModelView';
 
 interface StepCapaProps {
   meta: ReportMeta;
@@ -372,114 +373,18 @@ export const StepCapa: React.FC<StepCapaProps> = ({
         </div>
       </div>
 
-      {/* Live Preview Box (Exact style of Excel Capa) */}
+      {/* Live Preview Box (Modelo Oficial Fiel ao PDF) */}
       {showPreview && (
         <div className="mb-8 bg-[#141518] border border-[#2b2d33] rounded-2xl p-6 shadow-2xl">
           <div className="flex items-center justify-between mb-4">
             <h4 className="text-sm font-bold text-white flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-              Prévia Visual da Capa do Excel (Aba 1)
+              Prévia Visual da Capa Oficial (Fiel ao Modelo)
             </h4>
-            <span className="text-[11px] text-neutral-400">Padronização visual corporativa</span>
+            <span className="text-[11px] text-neutral-400">Padronização visual com silhuetas, ícones e badges oficiais</span>
           </div>
 
-          <div className="bg-[#FBBC04] rounded-xl p-6 md:p-8 text-neutral-950 font-sans shadow-lg border-2 border-amber-500/80">
-            {/* Title */}
-            <div className="bg-black/15 rounded-lg py-3 px-6 text-center mb-6">
-              <h2 className="text-xl md:text-2xl font-black uppercase text-white tracking-wide">
-                {meta.cliente || 'CLIENTE'} - {meta.mes || 'MÊS'} - {meta.ano || 'ANO'}
-              </h2>
-            </div>
-
-            {/* Columns */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Facebook Box */}
-              <div className="bg-white/20 backdrop-blur-xs rounded-xl p-5 border border-black/10">
-                <div className="text-center font-black text-sm uppercase tracking-wider pb-2 border-b border-black/10 mb-4">
-                  FACEBOOK
-                </div>
-                <div className="text-center font-bold text-lg mb-1">
-                  Total de {capa.fb.seguidores || '—'} seguidores
-                </div>
-                <div className="text-center text-xs text-neutral-900/80 italic mb-4 font-medium">
-                  {capa.fb.segAnterior || '—'} seguidores no mês anterior
-                </div>
-
-                <div className="flex items-center justify-center gap-4 mb-4">
-                  <span className="bg-white/40 px-3 py-1 rounded-full font-bold text-xs">
-                    {capa.fb.homens ? `${capa.fb.homens} Homens` : '—'}
-                  </span>
-                  <span className="bg-white/40 px-3 py-1 rounded-full font-bold text-xs">
-                    {capa.fb.mulheres ? `${capa.fb.mulheres} Mulheres` : '—'}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2 text-center">
-                  <div className="bg-white/30 rounded-lg p-2.5">
-                    <span className="block font-black text-sm truncate">{capa.fb.faixa || '—'}</span>
-                    <span className="block text-[9px] font-bold uppercase text-neutral-800 mt-1">
-                      Faixa Etária
-                    </span>
-                  </div>
-                  <div className="bg-white/30 rounded-lg p-2.5">
-                    <span className="block font-black text-base truncate">{capa.fb.alcancadas || '—'}</span>
-                    <span className="block text-[9px] font-bold uppercase text-neutral-800 mt-1">
-                      Contas Alcançadas
-                    </span>
-                  </div>
-                  <div className="bg-white/30 rounded-lg p-2.5">
-                    <span className="block font-black text-base truncate">{capa.fb.visitas || '—'}</span>
-                    <span className="block text-[9px] font-bold uppercase text-neutral-800 mt-1">
-                      Visitas à Página
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Instagram Box */}
-              <div className="bg-white/20 backdrop-blur-xs rounded-xl p-5 border border-black/10">
-                <div className="text-center font-black text-sm uppercase tracking-wider pb-2 border-b border-black/10 mb-4">
-                  INSTAGRAM
-                </div>
-                <div className="text-center font-bold text-lg mb-1">
-                  Total de {capa.ig.seguidores || '—'} seguidores
-                </div>
-                <div className="text-center text-xs text-neutral-900/80 italic mb-4 font-medium">
-                  {capa.ig.segAnterior || '—'} seguidores no mês anterior
-                </div>
-
-                <div className="flex items-center justify-center gap-4 mb-4">
-                  <span className="bg-white/40 px-3 py-1 rounded-full font-bold text-xs">
-                    {capa.ig.homens ? `${capa.ig.homens} Homens` : '—'}
-                  </span>
-                  <span className="bg-white/40 px-3 py-1 rounded-full font-bold text-xs">
-                    {capa.ig.mulheres ? `${capa.ig.mulheres} Mulheres` : '—'}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2 text-center">
-                  <div className="bg-white/30 rounded-lg p-2.5">
-                    <span className="block font-black text-sm truncate">{capa.ig.faixa || '—'}</span>
-                    <span className="block text-[9px] font-bold uppercase text-neutral-800 mt-1">
-                      Faixa Etária
-                    </span>
-                  </div>
-                  <div className="bg-white/30 rounded-lg p-2.5">
-                    <span className="block font-black text-base truncate">{capa.ig.alcancadas || '—'}</span>
-                    <span className="block text-[9px] font-bold uppercase text-neutral-800 mt-1">
-                      Contas Alcançadas
-                    </span>
-                  </div>
-                  <div className="bg-white/30 rounded-lg p-2.5">
-                    <span className="block font-black text-base truncate">{capa.ig.visitas || '—'}</span>
-                    <span className="block text-[9px] font-bold uppercase text-neutral-800 mt-1">
-                      Visitas ao Perfil
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <CapaModelView meta={meta} capa={capa} />
         </div>
       )}
 

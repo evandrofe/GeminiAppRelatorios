@@ -4,20 +4,14 @@ import {
   HelpCircle,
   TrendingUp,
   DollarSign,
-  Users,
-  MessageCircle,
-  Video,
   MousePointerClick,
   Info,
   ChevronDown,
   ChevronUp,
   Sparkles,
-  ArrowRight,
   Filter,
   Layers,
   Target,
-  Award,
-  Zap,
   BookOpen
 } from 'lucide-react';
 import { CampaignRow, ReportMeta } from '../types';
@@ -407,7 +401,7 @@ export const UnifiedTraditionalTable: React.FC<UnifiedTraditionalTableProps> = (
             </div>
 
             <a
-              href="#guia-funil-17-colunas"
+              href="#guia-17-colunas"
               className="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold transition-all flex items-center gap-1.5 shrink-0"
             >
               <BookOpen className="w-3.5 h-3.5 text-amber-400" />
@@ -446,6 +440,14 @@ export const UnifiedTraditionalTable: React.FC<UnifiedTraditionalTableProps> = (
               ✓ Filtro e Cidade aplicados a todas as ações!
             </span>
           )}
+        </div>
+
+        {/* Barra Laranja Oficial do Modelo */}
+        <div
+          className="text-white py-2.5 px-4 text-center font-black text-xs sm:text-sm uppercase tracking-wider shadow-sm"
+          style={{ backgroundColor: '#FF9900' }}
+        >
+          AÇÕES MENSAIS • MATRIZ OFICIAL DE IMPULSIONAMENTO
         </div>
 
         {/* The 17-Column Table */}
@@ -813,165 +815,9 @@ export const UnifiedTraditionalTable: React.FC<UnifiedTraditionalTableProps> = (
       </div>
 
       {/* ====================================================================== */}
-      {/* 2. COMO UMA COISA LIGA A OUTRA — O FUNIL CONECTADO DO META ADS */}
+      {/* 2. DICIONÁRIO COMPLETO DAS 17 COLUNAS DA PLANILHA */}
       {/* ====================================================================== */}
-      <div
-        id="guia-funil-17-colunas"
-        className="bg-[#141518] rounded-2xl border border-[#2b2d33] p-6 shadow-xl space-y-6"
-      >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2b2d33] pb-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              <span className="text-[11px] font-bold uppercase tracking-wider text-amber-400">
-                Lógica Estratégica & Conexão de Resultados
-              </span>
-            </div>
-            <h3 className="text-xl font-bold text-white tracking-tight">
-              Como uma métrica se conecta com a outra no Meta Ads?
-            </h3>
-            <p className="text-xs text-neutral-400 leading-relaxed max-w-3xl">
-              Nenhuma campanha atua isolada. O segredo de um tráfego de alta performance é entender que o dinheiro
-              investido percorre um funil: do primeiro olhar na cidade até a mensagem de compra no WhatsApp.
-            </p>
-          </div>
-          <span className="self-start sm:self-center px-3 py-1 rounded-xl text-xs font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30 shrink-0">
-            Visão Integrada de Funil
-          </span>
-        </div>
-
-        {/* Visual 3-Stage Connected Funnel Flow */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative">
-          {/* Topo de Funil */}
-          <div className="bg-[#181a20] rounded-xl border border-blue-900/40 p-4 relative overflow-hidden flex flex-col justify-between">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800/40">
-                  1. Topo de Funil
-                </span>
-                <Users className="w-4 h-4 text-blue-400" />
-              </div>
-              <div>
-                <h4 className="text-base font-bold text-white">Atração & Consciência</h4>
-                <p className="text-[11px] text-blue-200/80 font-medium mt-0.5">
-                  Campanhas de Alcance & Reconhecimento
-                </p>
-              </div>
-              <p className="text-xs text-neutral-300 leading-relaxed">
-                <strong>O Papel:</strong> "Jogar a rede no mar." Fazer toda a cidade e bairro saberem que o supermercado
-                está com ofertas ou novidades. Sem volume de pessoas no topo, o funil seca.
-              </p>
-              <div className="bg-[#111215] p-2.5 rounded-lg border border-neutral-800 text-[11px] space-y-1">
-                <div className="text-neutral-400">
-                  Métricas-Chave: <strong className="text-blue-300">Alcance (Col. 6)</strong> e{' '}
-                  <strong className="text-blue-300">CPM (Col. 10)</strong>
-                </div>
-                <div className="text-neutral-500 text-[10px]">
-                  Foco: Menor custo por mil pessoas atingidas. Não se cobra conversas diretas aqui.
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 pt-3 border-t border-neutral-800 text-[10px] text-neutral-400 flex items-center justify-between">
-              <span>Alimenta a próxima etapa</span>
-              <ArrowRight className="w-3.5 h-3.5 text-blue-400" />
-            </div>
-          </div>
-
-          {/* Meio de Funil */}
-          <div className="bg-[#181a20] rounded-xl border border-purple-900/40 p-4 relative overflow-hidden flex flex-col justify-between">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800/40">
-                  2. Meio de Funil
-                </span>
-                <Video className="w-4 h-4 text-purple-400" />
-              </div>
-              <div>
-                <h4 className="text-base font-bold text-white">Interesse & Consideração</h4>
-                <p className="text-[11px] text-purple-200/80 font-medium mt-0.5">
-                  Reels, Vídeos, Engajamento e Tráfego
-                </p>
-              </div>
-              <p className="text-xs text-neutral-300 leading-relaxed">
-                <strong>O Papel:</strong> "O filtro de interesse." Nem todo mundo que vê vai comprar na hora. Os mais
-                interessados assistem ao Reels de 15s, folheiam o carrossel ou clicam no encarte digital.
-              </p>
-              <div className="bg-[#111215] p-2.5 rounded-lg border border-neutral-800 text-[11px] space-y-1">
-                <div className="text-neutral-400">
-                  Métricas-Chave: <strong className="text-purple-300">ThruPlay (Col. 9)</strong>,{' '}
-                  <strong className="text-cyan-300">Cliques (Col. 8)</strong>,{' '}
-                  <strong className="text-sky-300">Engajamento (Col. 7)</strong>
-                </div>
-                <div className="text-neutral-500 text-[10px]">
-                  Foco: Custo baixo por visualização completa (Col. 12) e por clique no link (Col. 11).
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 pt-3 border-t border-neutral-800 text-[10px] text-neutral-400 flex items-center justify-between">
-              <span>Aquece o lead para compra</span>
-              <ArrowRight className="w-3.5 h-3.5 text-purple-400" />
-            </div>
-          </div>
-
-          {/* Fundo de Funil */}
-          <div className="bg-[#181a20] rounded-xl border border-emerald-900/40 p-4 relative overflow-hidden flex flex-col justify-between">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/40">
-                  3. Fundo de Funil
-                </span>
-                <MessageCircle className="w-4 h-4 text-emerald-400" />
-              </div>
-              <div>
-                <h4 className="text-base font-bold text-white">Ação & Vendas</h4>
-                <p className="text-[11px] text-emerald-200/80 font-medium mt-0.5">
-                  Campanhas de Mensagens / WhatsApp
-                </p>
-              </div>
-              <p className="text-xs text-neutral-300 leading-relaxed">
-                <strong>O Papel:</strong> "A colheita comercial." O cliente que já conhece a loja e viu as receitas/ofertas
-                agora clica para pedir preço, cotar entrega ou reservar um produto direto com a equipe.
-              </p>
-              <div className="bg-[#111215] p-2.5 rounded-lg border border-neutral-800 text-[11px] space-y-1">
-                <div className="text-neutral-400">
-                  Métricas-Chave: <strong className="text-emerald-400">Conversas (Col. 17)</strong> e{' '}
-                  <strong className="text-emerald-400">Custo por Conversa (Col. 14)</strong>
-                </div>
-                <div className="text-neutral-500 text-[10px]">
-                  Foco: Volume de vendas diretas e oportunidades qualificadas geradas para a loja.
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 pt-3 border-t border-neutral-800 text-[10px] text-emerald-400 flex items-center justify-between font-bold">
-              <span>Resultado financeiro real</span>
-              <Zap className="w-3.5 h-3.5" />
-            </div>
-          </div>
-        </div>
-
-        {/* Strategic Takeaway Box */}
-        <div className="bg-[#181a20] rounded-xl border border-[#2b2d33] p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 text-xs text-neutral-300">
-          <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400 shrink-0">
-            <Award className="w-6 h-6" />
-          </div>
-          <div className="space-y-1">
-            <h4 className="font-bold text-white text-sm">
-              Por que cada pilar tem um objetivo diferente e como isso protege seu dinheiro?
-            </h4>
-            <p className="text-neutral-300 leading-relaxed text-[11.5px]">
-              Se colocássemos 100% da verba apenas em campanhas de WhatsApp (Fundo), o custo por conversa subiria muito
-              porque as pessoas da cidade não teriam confiança ou familiaridade. Ao investir em <strong>Alcance</strong> e{' '}
-              <strong>Reels</strong>, a marca ganha notoriedade diária. Quando a campanha de WhatsApp é ativada, o cliente já
-              está aquecido — <em>o que derruba o custo por conversa e aumenta a taxa de fechamento no balcão!</em>
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* ====================================================================== */}
-      {/* 3. DICIONÁRIO COMPLETO DAS 17 COLUNAS DA PLANILHA */}
-      {/* ====================================================================== */}
-      <div className="bg-[#141518] rounded-2xl border border-[#2b2d33] p-6 shadow-xl space-y-6">
+      <div id="guia-17-colunas" className="bg-[#141518] rounded-2xl border border-[#2b2d33] p-6 shadow-xl space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2b2d33] pb-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
