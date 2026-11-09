@@ -20,7 +20,8 @@ import {
   ChevronRight,
   Lightbulb,
   Layers,
-  ArrowRight
+  ArrowRight,
+  MapPin
 } from 'lucide-react';
 import {
   CampaignRow,
@@ -44,6 +45,9 @@ interface StepReportProps {
   onExportExcel: () => void;
   isExportingExcel: boolean;
   onBackToCapa: () => void;
+  onUpdateFiltro?: (campaignId: string, newFiltro: string) => void;
+  onUpdateCidade?: (campaignId: string, newCidade: string) => void;
+  onBatchUpdateFiltroCidade?: (filtro: string, cidade: string) => void;
   isPresentationMode?: boolean;
   onTogglePresentationMode?: () => void;
 }
@@ -55,6 +59,9 @@ export const StepReport: React.FC<StepReportProps> = ({
   onExportExcel,
   isExportingExcel,
   onBackToCapa,
+  onUpdateFiltro,
+  onUpdateCidade,
+  onBatchUpdateFiltroCidade,
   isPresentationMode = false,
   onTogglePresentationMode,
 }) => {
@@ -64,6 +71,23 @@ export const StepReport: React.FC<StepReportProps> = ({
   const [aiError, setAiError] = useState<string | null>(null);
   const [isGeneratingAi, setIsGeneratingAi] = useState(false);
   const [copiedWhatsapp, setCopiedWhatsapp] = useState(false);
+  const [batchFiltro, setBatchFiltro] = useState('');
+  const [batchCidade, setBatchCidade] = useState('');
+  const [batchSegmentedSuccess, setBatchSegmentedSuccess] = useState(false);
+
+  const handleApplyBatchSegmented = () => {
+    if (!batchFiltro.trim() && !batchCidade.trim()) return;
+    if (onBatchUpdateFiltroCidade) {
+      onBatchUpdateFiltroCidade(batchFiltro.trim(), batchCidade.trim());
+    } else {
+      campaigns.forEach((c) => {
+        if (batchFiltro.trim()) onUpdateFiltro?.(c.id, batchFiltro.trim());
+        if (batchCidade.trim()) onUpdateCidade?.(c.id, batchCidade.trim());
+      });
+    }
+    setBatchSegmentedSuccess(true);
+    setTimeout(() => setBatchSegmentedSuccess(false), 3000);
+  };
 
   // Categorize campaigns into the 3 specific strategic pillars
   const pillars = categorizeCampaignPillars(campaigns);
@@ -322,10 +346,11 @@ export const StepReport: React.FC<StepReportProps> = ({
               ? 'bg-amber-500 text-neutral-950 shadow-md font-extrabold'
               : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
           }`}
+          title="Apresentação visual dinâmica destaque para o cliente"
         >
           <Sparkles className={`w-4 h-4 ${activeTab === 'reportei' ? 'text-neutral-950' : 'text-amber-400'}`} />
-          <span>Visão Reportei (Apresentação Cliente)</span>
-          <span className="text-[10px] bg-black/20 px-1.5 py-0.5 rounded-full font-bold">Destaque</span>
+          <span>Apresentação Destaque</span>
+          <span className="text-[10px] bg-black/20 px-1.5 py-0.5 rounded-full font-bold">Cliente</span>
         </button>
 
         <button
@@ -335,9 +360,10 @@ export const StepReport: React.FC<StepReportProps> = ({
               ? 'bg-amber-500 text-neutral-950 shadow-md font-extrabold'
               : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
           }`}
+          title="Relatório dividido pelos 3 pilares estratégicos com 17 colunas"
         >
           <Layers className="w-4 h-4" />
-          <span>Padrão Segmentado por Pilar (Gemini)</span>
+          <span>Pilares Explicados (Gemini)</span>
           <span className="text-[10px] bg-black/20 px-1.5 py-0.5 rounded-full font-bold">17 Colunas</span>
         </button>
 
@@ -348,9 +374,11 @@ export const StepReport: React.FC<StepReportProps> = ({
               ? 'bg-amber-500 text-neutral-950 shadow-md font-extrabold'
               : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
           }`}
+          title="Planilha completa tradicional com todas as métricas e custos"
         >
           <TableIcon className="w-4 h-4" />
-          <span>Planilha Unificada Tradicional</span>
+          <span>Planilha de Custos</span>
+          <span className="text-[10px] bg-black/20 px-1.5 py-0.5 rounded-full font-bold">Matriz</span>
         </button>
 
         <button
@@ -360,9 +388,10 @@ export const StepReport: React.FC<StepReportProps> = ({
               ? 'bg-amber-500 text-neutral-950 shadow-md font-extrabold'
               : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
           }`}
+          title="Resumo visual rápido com cartões de indicadores e gráficos"
         >
           <BarChart3 className="w-4 h-4" />
-          <span>Dashboard Visual de KPIs</span>
+          <span>Resumo em Gráficos</span>
         </button>
 
         <button
@@ -375,9 +404,10 @@ export const StepReport: React.FC<StepReportProps> = ({
               ? 'bg-amber-500 text-neutral-950 shadow-md font-extrabold'
               : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
           }`}
+          title="Diagnóstico executivo inteligente e recomendações da IA"
         >
           <Sparkles className="w-4 h-4 text-amber-400" />
-          <span>Análise Executiva Gemini IA</span>
+          <span>Diagnóstico com IA</span>
           {aiAnalysis && <span className="w-2 h-2 rounded-full bg-emerald-400" />}
         </button>
 
@@ -388,9 +418,10 @@ export const StepReport: React.FC<StepReportProps> = ({
               ? 'bg-amber-500 text-neutral-950 shadow-md font-extrabold'
               : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
           }`}
+          title="Chat interativo para tirar dúvidas com o especialista em tráfego"
         >
           <Bot className="w-4 h-4" />
-          <span>Consultor Especialista (Chat)</span>
+          <span>Tirar Dúvidas com IA</span>
         </button>
       </div>
 
@@ -467,6 +498,55 @@ export const StepReport: React.FC<StepReportProps> = ({
               campaigns={campaigns}
               title="Distribuição do Orçamento por Objetivo Estratégico"
             />
+          </div>
+
+          {/* Inserir Filtro e Cidade em Lote no Padrão Segmentado */}
+          <div className="bg-[#181a20] border border-[#2b2d33] rounded-2xl p-4 no-print shadow-lg">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                  <MapPin className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                    Inserir Filtro e Cidade nas Campanhas
+                    <span className="text-[10px] font-normal text-neutral-400 lowercase">(colunas 15 e 16)</span>
+                  </h4>
+                  <p className="text-[11px] text-neutral-400">
+                    Você pode digitar individualmente em cada linha dos pilares abaixo ou preencher em lote:
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                <input
+                  type="text"
+                  placeholder="Filtro (ex: 18 a 65 anos • Raio 5km)"
+                  value={batchFiltro}
+                  onChange={(e) => setBatchFiltro(e.target.value)}
+                  className="bg-[#0f1013] border border-[#2b2d33] rounded-lg px-3 py-1.5 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500 w-full sm:w-56"
+                />
+                <input
+                  type="text"
+                  placeholder="Cidade (ex: Três Lagoas - MS)"
+                  value={batchCidade}
+                  onChange={(e) => setBatchCidade(e.target.value)}
+                  className="bg-[#0f1013] border border-[#2b2d33] rounded-lg px-3 py-1.5 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500 w-full sm:w-44"
+                />
+                <button
+                  type="button"
+                  onClick={handleApplyBatchSegmented}
+                  className="bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors flex items-center gap-1.5 shadow-md shadow-amber-500/20 cursor-pointer"
+                >
+                  <Check className="w-3.5 h-3.5" />
+                  Aplicar a Todas
+                </button>
+              </div>
+            </div>
+            {batchSegmentedSuccess && (
+              <p className="text-xs text-emerald-400 font-medium mt-2 flex items-center gap-1">
+                <Check className="w-3.5 h-3.5" /> Informações de Filtro e Cidade aplicadas com sucesso em todas as campanhas!
+              </p>
+            )}
           </div>
 
           {/* ═══════════════════════════════════════════════════════════════ */}
@@ -551,8 +631,26 @@ export const StepReport: React.FC<StepReportProps> = ({
                           <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.cThru > 0 ? fmtBRL(c.cThru) : '—'}</td>
                           <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.cInt > 0 ? fmtBRL(c.cInt) : '—'}</td>
                           <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.cConv > 0 ? fmtBRL(c.cConv) : '—'}</td>
-                          <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-500 whitespace-nowrap">{c.filtro || '—'}</td>
-                          <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-500 whitespace-nowrap">{c.cidade || '—'}</td>
+                          <td className="py-1 px-1 border-r border-neutral-200 text-center whitespace-nowrap">
+                            <input
+                              type="text"
+                              placeholder="Filtro..."
+                              value={c.filtro || ''}
+                              onChange={(e) => onUpdateFiltro?.(c.id, e.target.value)}
+                              className="w-full min-w-[85px] max-w-[120px] bg-transparent hover:bg-blue-50/80 focus:bg-white border border-transparent hover:border-neutral-300 focus:border-blue-500 rounded px-1.5 py-0.5 text-[9.5px] text-center text-neutral-800 focus:outline-none transition-colors"
+                              title="Clique para editar Filtro (coluna 15)"
+                            />
+                          </td>
+                          <td className="py-1 px-1 border-r border-neutral-200 text-center whitespace-nowrap">
+                            <input
+                              type="text"
+                              placeholder="Cidade..."
+                              value={c.cidade || ''}
+                              onChange={(e) => onUpdateCidade?.(c.id, e.target.value)}
+                              className="w-full min-w-[80px] max-w-[110px] bg-transparent hover:bg-blue-50/80 focus:bg-white border border-transparent hover:border-neutral-300 focus:border-blue-500 rounded px-1.5 py-0.5 text-[9.5px] text-center text-neutral-800 focus:outline-none transition-colors"
+                              title="Clique para editar Cidade (coluna 16)"
+                            />
+                          </td>
                           <td className="py-2 px-2 border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.conv > 0 ? fmtNum(c.conv) : '—'}</td>
                         </tr>
                       );
@@ -665,8 +763,26 @@ export const StepReport: React.FC<StepReportProps> = ({
                         <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.cThru > 0 ? fmtBRL(c.cThru) : '—'}</td>
                         <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-800 whitespace-nowrap font-mono bg-emerald-50/40">{c.cInt > 0 ? fmtBRL(c.cInt) : '—'}</td>
                         <td className="py-2 px-2 border-r border-neutral-200 text-right font-bold text-emerald-800 whitespace-nowrap font-mono bg-emerald-50/50">{c.cConv > 0 ? fmtBRL(c.cConv) : '—'}</td>
-                        <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-500 whitespace-nowrap">{c.filtro || '—'}</td>
-                        <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-500 whitespace-nowrap">{c.cidade || '—'}</td>
+                        <td className="py-1 px-1 border-r border-neutral-200 text-center whitespace-nowrap">
+                          <input
+                            type="text"
+                            placeholder="Filtro..."
+                            value={c.filtro || ''}
+                            onChange={(e) => onUpdateFiltro?.(c.id, e.target.value)}
+                            className="w-full min-w-[85px] max-w-[120px] bg-transparent hover:bg-emerald-50/80 focus:bg-white border border-transparent hover:border-neutral-300 focus:border-emerald-500 rounded px-1.5 py-0.5 text-[9.5px] text-center text-neutral-800 focus:outline-none transition-colors"
+                            title="Clique para editar Filtro (coluna 15)"
+                          />
+                        </td>
+                        <td className="py-1 px-1 border-r border-neutral-200 text-center whitespace-nowrap">
+                          <input
+                            type="text"
+                            placeholder="Cidade..."
+                            value={c.cidade || ''}
+                            onChange={(e) => onUpdateCidade?.(c.id, e.target.value)}
+                            className="w-full min-w-[80px] max-w-[110px] bg-transparent hover:bg-emerald-50/80 focus:bg-white border border-transparent hover:border-neutral-300 focus:border-emerald-500 rounded px-1.5 py-0.5 text-[9.5px] text-center text-neutral-800 focus:outline-none transition-colors"
+                            title="Clique para editar Cidade (coluna 16)"
+                          />
+                        </td>
                         <td className="py-2 px-2 border-neutral-200 text-right font-black text-emerald-950 whitespace-nowrap font-mono bg-emerald-50/60">{c.conv > 0 ? `${c.conv} conv.` : '—'}</td>
                       </tr>
                     ))
@@ -778,8 +894,26 @@ export const StepReport: React.FC<StepReportProps> = ({
                         <td className="py-2 px-2 border-r border-neutral-200 text-right font-bold text-purple-800 whitespace-nowrap font-mono bg-purple-50/50">{c.cThru > 0 ? fmtBRL(c.cThru) : '—'}</td>
                         <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.cInt > 0 ? fmtBRL(c.cInt) : '—'}</td>
                         <td className="py-2 px-2 border-r border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.cConv > 0 ? fmtBRL(c.cConv) : '—'}</td>
-                        <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-500 whitespace-nowrap">{c.filtro || '—'}</td>
-                        <td className="py-2 px-1.5 border-r border-neutral-200 text-center text-neutral-500 whitespace-nowrap">{c.cidade || '—'}</td>
+                        <td className="py-1 px-1 border-r border-neutral-200 text-center whitespace-nowrap">
+                          <input
+                            type="text"
+                            placeholder="Filtro..."
+                            value={c.filtro || ''}
+                            onChange={(e) => onUpdateFiltro?.(c.id, e.target.value)}
+                            className="w-full min-w-[85px] max-w-[120px] bg-transparent hover:bg-purple-50/80 focus:bg-white border border-transparent hover:border-neutral-300 focus:border-purple-500 rounded px-1.5 py-0.5 text-[9.5px] text-center text-neutral-800 focus:outline-none transition-colors"
+                            title="Clique para editar Filtro (coluna 15)"
+                          />
+                        </td>
+                        <td className="py-1 px-1 border-r border-neutral-200 text-center whitespace-nowrap">
+                          <input
+                            type="text"
+                            placeholder="Cidade..."
+                            value={c.cidade || ''}
+                            onChange={(e) => onUpdateCidade?.(c.id, e.target.value)}
+                            className="w-full min-w-[80px] max-w-[110px] bg-transparent hover:bg-purple-50/80 focus:bg-white border border-transparent hover:border-neutral-300 focus:border-purple-500 rounded px-1.5 py-0.5 text-[9.5px] text-center text-neutral-800 focus:outline-none transition-colors"
+                            title="Clique para editar Cidade (coluna 16)"
+                          />
+                        </td>
                         <td className="py-2 px-2 border-neutral-200 text-right text-neutral-700 whitespace-nowrap font-mono">{c.conv > 0 ? `${c.conv} conv.` : '—'}</td>
                       </tr>
                     ))
@@ -991,6 +1125,9 @@ export const StepReport: React.FC<StepReportProps> = ({
           totalLinks={totalLinks}
           totalViews={totalViews}
           totalConv={totalConv}
+          onUpdateFiltro={onUpdateFiltro}
+          onUpdateCidade={onUpdateCidade}
+          onBatchUpdateFiltroCidade={onBatchUpdateFiltroCidade}
         />
       )}
 

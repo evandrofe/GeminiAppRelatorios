@@ -5,7 +5,7 @@ export const OBJ_LABELS: Record<ObjectiveType, string> = {
   Alc: 'Alcance',
   Eng: 'Engajamento',
   EngLink: 'Engajamento de Link',
-  EngWhats: 'Engajamento Conversa Whats',
+  EngWhats: 'Engajamento Conversa de Whats',
   TrafLink: 'Tráfego de Link',
   TrafWhats: 'Tráfego Conversas Whats',
   ReelsAlc: 'Reels Alcance',
@@ -86,18 +86,17 @@ export const DEFAULT_CLASSIFIER_CONFIG: ClassifierConfig = {
     indefinido: 999
   },
   objectiveRules: [
-    // Reels específicas
+    // Reels específicas com WhatsApp
+    { name: 'Reels Eng Whats', objective: 'ReelsEngWhats', when: { allWords: [['reels', 'reel'], ['whats', 'whatsapp', 'wpp', 'zap', 'wats']] } },
     { name: 'Reels Tráfego Whats', objective: 'ReelsTrafWhats', when: { allWords: [['reels', 'reel'], ['traf', 'trafego'], ['whats', 'whatsapp', 'wpp', 'zap', 'wats']] } },
     { name: 'Reels Tráfego Link', objective: 'ReelsTrafLink', when: { allWords: [['reels', 'reel'], ['traf', 'trafego'], ['link', 'clique']] } },
-    { name: 'Reels Eng Whats', objective: 'ReelsEngWhats', when: { allWords: [['reels', 'reel'], ['eng', 'engajamento', 'engaj'], ['whats', 'whatsapp', 'wpp', 'zap', 'wats']] } },
     { name: 'Reels Eng Link', objective: 'ReelsEngLink', when: { allWords: [['reels', 'reel'], ['eng', 'engajamento', 'engaj'], ['link', 'clique']] } },
     { name: 'Reels Eng', objective: 'ReelsEng', when: { allWords: [['reels', 'reel'], ['eng', 'engajamento', 'engaj']] } },
     { name: 'Reels Alcance', objective: 'ReelsAlc', when: { anyWords: [['reels', 'reel']] } },
 
-    // Mídia comum
-    { name: 'Tráfego Whats', objective: 'TrafWhats', when: { allWords: [['traf', 'trafego'], ['whats', 'whatsapp', 'wpp', 'zap', 'wats']] } },
+    // Mídia comum: Qualquer ação com Whats / WhatsApp tem objetivo principal Eng Whats (Engajamento Conversa de Whats)
+    { name: 'Eng Whats', objective: 'EngWhats', when: { anyWords: [['whats', 'whatsapp', 'wpp', 'zap', 'wats']] } },
     { name: 'Tráfego Link', objective: 'TrafLink', when: { allWords: [['traf', 'trafego'], ['link', 'clique']] } },
-    { name: 'Eng Whats', objective: 'EngWhats', when: { allWords: [['eng', 'engajamento', 'engaj'], ['whats', 'whatsapp', 'wpp', 'zap', 'wats']] } },
     { name: 'Eng Link', objective: 'EngLink', when: { allWords: [['eng', 'engajamento', 'engaj'], ['link', 'clique']] } },
     { name: 'Engajamento', objective: 'Eng', when: { anyWords: [['eng', 'engajamento', 'engaj']] } },
     { name: 'Alcance', objective: 'Alc', when: { anyWords: [['alc', 'alcance']] } }
@@ -520,7 +519,7 @@ export function parseExcelWorkbook(wb: XLSX.WorkBook): CampaignRow[] {
     const adName = String(g(row, iAN) || g(row, iCA) || '').trim();
 
     const format = defaultClassifier.detectFormat(name, adName);
-    const objective = defaultClassifier.detectObjective(name, format);
+    let objective = defaultClassifier.detectObjective(name, format);
 
     const dateFromName = extractDateFromName(name);
     const dStart = parseMetaDate(g(row, iDI));
@@ -544,10 +543,19 @@ export function parseExcelWorkbook(wb: XLSX.WorkBook): CampaignRow[] {
     const isConversa = tipoRes.includes('conversa') || tipoRes.includes('mensagem');
     const isEngajamento = tipoRes.includes('interac') || tipoRes.includes('engaj');
 
+    let thru = Math.round(safeNum(row, iThru) || (isThruplay ? resultados : 0));
     let eng = Math.round(safeNum(row, iEP) || (isEngajamento ? resultados : 0));
     let links = Math.round(safeNum(row, iLC) || (isClique ? resultados : 0));
-    let thru = Math.round(safeNum(row, iThru) || (isThruplay ? resultados : 0));
     let conv = Math.round(safeNum(row, iConv) || (isConversa ? resultados : 0));
+
+    // Regra mandatória solicitada pelo usuário:
+    // Se constar Whats ou WhatsApp (ou termos relacionados como zap, wpp, wats) e a campanha gerar conversa,
+    // o objetivo dela é "Engajamento Conversa de Whats" (EngWhats ou ReelsEngWhats para Reels).
+    const isWhatsTerm = /whats|whatsapp|wpp|zap|wats/i.test(name) || /whats|whatsapp|wpp|zap|wats/i.test(adName);
+    const isReels = /^Reels/i.test(format) || /reels|reel/i.test(name);
+    if (isWhatsTerm && (conv > 0 || isConversa)) {
+      objective = isReels ? 'ReelsEngWhats' : 'EngWhats';
+    }
 
     const isAlcanceCampaign = objective === 'Alc' || objective === 'ReelsAlc';
     if (!eng && !links && !thru && !conv && resultados > 0 && !isAlcanceCampaign && resultados !== reach) {
@@ -667,7 +675,9 @@ export function getSampleDemoData(): { meta: ReportMeta; rows: CampaignRow[]; ca
       cpc: 0,
       cThru: 0,
       cInt: 0,
-      cConv: 0
+      cConv: 0,
+      filtro: '18 a 65 anos • Raio 5km',
+      cidade: 'Três Lagoas - MS'
     },
     {
       id: 'demo_2',
@@ -688,14 +698,16 @@ export function getSampleDemoData(): { meta: ReportMeta; rows: CampaignRow[]; ca
       cpc: 0,
       cThru: 0,
       cInt: 0.084,
-      cConv: 0
+      cConv: 0,
+      filtro: '25 a 55 anos • Raio 3km',
+      cidade: 'Três Lagoas - MS'
     },
     {
       id: 'demo_3',
       name: '10/10 - Panfleto Virtual - Trafego Whats - Clube de Descontos',
-      displayName: 'Panfleto Virtual - Tráfego Whats',
+      displayName: 'Panfleto Virtual - Engajamento Whats',
       format: 'Panfleto',
-      objective: 'TrafWhats',
+      objective: 'EngWhats',
       validity: '10 a 14/10/2026',
       budget: 200.0,
       spent: 197.3,
@@ -709,7 +721,9 @@ export function getSampleDemoData(): { meta: ReportMeta; rows: CampaignRow[]; ca
       cpc: 0,
       cThru: 0,
       cInt: 0,
-      cConv: 1.39
+      cConv: 1.39,
+      filtro: '18 a 60 anos • Raio 7km',
+      cidade: 'Três Lagoas - MS'
     },
     {
       id: 'demo_4',
@@ -730,7 +744,9 @@ export function getSampleDemoData(): { meta: ReportMeta; rows: CampaignRow[]; ca
       cpc: 0,
       cThru: 0.0095,
       cInt: 0.047,
-      cConv: 0
+      cConv: 0,
+      filtro: '20 a 50 anos • Raio 5km',
+      cidade: 'Três Lagoas - MS'
     },
     {
       id: 'demo_5',
@@ -751,14 +767,16 @@ export function getSampleDemoData(): { meta: ReportMeta; rows: CampaignRow[]; ca
       cpc: 0.183,
       cThru: 0,
       cInt: 0.081,
-      cConv: 0
+      cConv: 0,
+      filtro: '22 a 55 anos • Raio 4km',
+      cidade: 'Três Lagoas - MS'
     },
     {
       id: 'demo_6',
       name: '26/10 - Reels - Fim de Mes Imbativel - Trafego Whats',
-      displayName: 'Reels - Fim de Mês - Reels Tráfego + Whats',
+      displayName: 'Reels - Fim de Mês - Reels Engajamento Whats',
       format: 'Reels',
-      objective: 'ReelsTrafWhats',
+      objective: 'ReelsEngWhats',
       validity: '26 a 31/10/2026',
       budget: 250.0,
       spent: 248.9,
@@ -772,7 +790,9 @@ export function getSampleDemoData(): { meta: ReportMeta; rows: CampaignRow[]; ca
       cpc: 0,
       cThru: 0.0101,
       cInt: 0.115,
-      cConv: 1.32
+      cConv: 1.32,
+      filtro: '18 a 65 anos • Raio 5km',
+      cidade: 'Três Lagoas - MS'
     }
   ];
 

@@ -168,7 +168,7 @@ Taxonomia de Objetivos permitidos:
 - "Alc": Alcance puro de marca/publicação
 - "Eng": Engajamento geral (curtidas, comentários, compartilhamentos)
 - "EngLink": Engajamento com clique no Link
-- "EngWhats": Engajamento focado em iniciar conversas no WhatsApp
+- "EngWhats": Engajamento Conversa de Whats (Foco em iniciar conversas no WhatsApp)
 - "TrafLink": Tráfego com foco em destino de Link / Site / Cardápio
 - "TrafWhats": Tráfego direto para conversas no WhatsApp
 - "ReelsAlc": Formato Reels focado em alcance
@@ -177,6 +177,9 @@ Taxonomia de Objetivos permitidos:
 - "ReelsEngWhats": Formato Reels com engajamento para WhatsApp
 - "ReelsTrafLink": Formato Reels com tráfego para Link
 - "ReelsTrafWhats": Formato Reels com tráfego para conversas no WhatsApp
+
+REGRA MANDATÓRIA:
+Sempre que o nome da campanha ou ação contiver "Whats", "WhatsApp", "Zap", "Wpp" ou termos relacionados E a campanha tiver conversas geradas (conv > 0), classifique OBRIGATORIAMENTE com o objetivo "EngWhats" (Engajamento Conversa de Whats) — ou "ReelsEngWhats" caso o formato seja Reels.
 
 Taxonomia de Formatos comuns:
 "Reels", "Panfleto", "Carrossel", "Post", "Vídeo", "Story".
@@ -223,17 +226,25 @@ Retorne um JSON contendo a classificação para cada ID.`;
       // Heuristic fallback if quota is exhausted
       const classifications = campaigns.map((c: any) => {
         const isReels = /reels|reel/i.test(c.name);
-        const isWhats = /whats|whatsapp|zap/i.test(c.name);
+        const isWhats = /whats|whatsapp|zap|wpp|wats/i.test(c.name);
+        const hasConv = (Number(c.conv) || 0) > 0;
         const isLink = /link|clique/i.test(c.name);
         const isAlc = /alc|alcance/i.test(c.name);
 
         let objective = 'Eng';
-        if (isReels && isWhats) objective = 'ReelsTrafWhats';
-        else if (isReels && isLink) objective = 'ReelsTrafLink';
-        else if (isReels) objective = 'ReelsAlc';
-        else if (isWhats) objective = 'TrafWhats';
-        else if (isLink) objective = 'TrafLink';
-        else if (isAlc) objective = 'Alc';
+        if (isWhats && (hasConv || !isLink)) {
+          objective = isReels ? 'ReelsEngWhats' : 'EngWhats';
+        } else if (isReels && isLink) {
+          objective = 'ReelsEngLink';
+        } else if (isReels) {
+          objective = 'ReelsAlc';
+        } else if (isWhats) {
+          objective = 'EngWhats';
+        } else if (isLink) {
+          objective = 'TrafLink';
+        } else if (isAlc) {
+          objective = 'Alc';
+        }
 
         return {
           id: c.id,

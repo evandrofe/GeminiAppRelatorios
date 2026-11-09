@@ -178,6 +178,31 @@ export default function App() {
     );
   };
 
+  // Update filtro for a specific campaign
+  const handleUpdateFiltro = (campaignId: string, newFiltro: string) => {
+    setCampaigns((prev) =>
+      prev.map((c) => (c.id === campaignId ? { ...c, filtro: newFiltro } : c))
+    );
+  };
+
+  // Update cidade for a specific campaign
+  const handleUpdateCidade = (campaignId: string, newCidade: string) => {
+    setCampaigns((prev) =>
+      prev.map((c) => (c.id === campaignId ? { ...c, cidade: newCidade } : c))
+    );
+  };
+
+  // Batch update filtro and cidade for all campaigns
+  const handleBatchUpdateFiltroCidade = (filtro: string, cidade: string) => {
+    setCampaigns((prev) =>
+      prev.map((c) => ({
+        ...c,
+        ...(filtro !== undefined && filtro !== '' ? { filtro } : {}),
+        ...(cidade !== undefined && cidade !== '' ? { cidade } : {})
+      }))
+    );
+  };
+
   // Batch AI classification with Gemini
   const handleAiClassify = async () => {
     if (!campaigns.length) return;
@@ -308,6 +333,9 @@ export default function App() {
             onUpdateObjective={handleUpdateObjective}
             onUpdateDisplayName={handleUpdateDisplayName}
             onUpdateFormat={handleUpdateFormat}
+            onUpdateFiltro={handleUpdateFiltro}
+            onUpdateCidade={handleUpdateCidade}
+            onBatchUpdateFiltroCidade={handleBatchUpdateFiltroCidade}
             onAiClassify={handleAiClassify}
             isAiClassifying={isAiClassifying}
             onContinue={() => setCurrentStep(3)}
@@ -332,6 +360,9 @@ export default function App() {
             onExportExcel={handleExportExcel}
             isExportingExcel={isExportingExcel}
             onBackToCapa={() => setCurrentStep(3)}
+            onUpdateFiltro={handleUpdateFiltro}
+            onUpdateCidade={handleUpdateCidade}
+            onBatchUpdateFiltroCidade={handleBatchUpdateFiltroCidade}
             isPresentationMode={isPresentationMode}
             onTogglePresentationMode={() => setIsPresentationMode(!isPresentationMode)}
           />

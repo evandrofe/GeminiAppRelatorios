@@ -8,7 +8,8 @@ import {
   Search,
   Layers,
   HelpCircle,
-  Wand2
+  Wand2,
+  MapPin
 } from 'lucide-react';
 import { CampaignRow, ObjectiveType, ReportMeta } from '../types';
 import { OBJ_COLORS, OBJ_LABELS, OBJ_OPTIONS } from '../lib/metaAdsParser';
@@ -19,6 +20,9 @@ interface StepReviewProps {
   onUpdateObjective: (campaignId: string, newObjective: ObjectiveType) => void;
   onUpdateDisplayName: (campaignId: string, newDisplayName: string) => void;
   onUpdateFormat: (campaignId: string, newFormat: string) => void;
+  onUpdateFiltro: (campaignId: string, newFiltro: string) => void;
+  onUpdateCidade: (campaignId: string, newCidade: string) => void;
+  onBatchUpdateFiltroCidade?: (filtro: string, cidade: string) => void;
   onAiClassify: () => Promise<void>;
   isAiClassifying: boolean;
   onContinue: () => void;
@@ -30,12 +34,32 @@ export const StepReview: React.FC<StepReviewProps> = ({
   onUpdateObjective,
   onUpdateDisplayName,
   onUpdateFormat,
+  onUpdateFiltro,
+  onUpdateCidade,
+  onBatchUpdateFiltroCidade,
   onAiClassify,
   isAiClassifying,
   onContinue,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterObjective, setFilterObjective] = useState<string>('all');
+  const [batchFiltro, setBatchFiltro] = useState('');
+  const [batchCidade, setBatchCidade] = useState('');
+  const [batchAppliedMsg, setBatchAppliedMsg] = useState(false);
+
+  const handleApplyBatchFiltroCidade = () => {
+    if (!batchFiltro.trim() && !batchCidade.trim()) return;
+    if (onBatchUpdateFiltroCidade) {
+      onBatchUpdateFiltroCidade(batchFiltro.trim(), batchCidade.trim());
+    } else {
+      campaigns.forEach((c) => {
+        if (batchFiltro.trim()) onUpdateFiltro(c.id, batchFiltro.trim());
+        if (batchCidade.trim()) onUpdateCidade(c.id, batchCidade.trim());
+      });
+    }
+    setBatchAppliedMsg(true);
+    setTimeout(() => setBatchAppliedMsg(false), 3000);
+  };
 
   const pendingCount = campaigns.filter((c) => c.objective === 'indefinido').length;
   const totalCount = campaigns.length;
@@ -172,6 +196,56 @@ export const StepReview: React.FC<StepReviewProps> = ({
         </div>
       </div>
 
+      {/* Batch Inserter for Filtro and Cidade */}
+      <div className="bg-[#181a20] border border-[#2b2d33] rounded-2xl p-4 mb-4 shadow-lg">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400">
+              <MapPin className="w-4 h-4" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-white flex items-center gap-2">
+                <span>Inserir Filtro e Cidade em Lote</span>
+                <span className="text-[10px] bg-amber-500/20 text-amber-300 font-semibold px-2 py-0.5 rounded-full">
+                  Campos Manuais
+                </span>
+              </h4>
+              <p className="text-[11px] text-neutral-400">
+                Preencha uma vez para aplicar a todas as {campaigns.length} ações, ou ajuste individualmente em cada linha da tabela.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+            <input
+              type="text"
+              placeholder="Filtro (ex: 18 a 65 anos • Raio 5km)"
+              value={batchFiltro}
+              onChange={(e) => setBatchFiltro(e.target.value)}
+              className="bg-[#111215] border border-[#33353e] focus:border-amber-400 rounded-xl px-3 py-1.5 text-xs text-white placeholder-neutral-500 w-full sm:w-56 focus:outline-none transition-colors"
+            />
+            <input
+              type="text"
+              placeholder="Cidade (ex: Três Lagoas - MS)"
+              value={batchCidade}
+              onChange={(e) => setBatchCidade(e.target.value)}
+              className="bg-[#111215] border border-[#33353e] focus:border-amber-400 rounded-xl px-3 py-1.5 text-xs text-white placeholder-neutral-500 w-full sm:w-48 focus:outline-none transition-colors"
+            />
+            <button
+              onClick={handleApplyBatchFiltroCidade}
+              className="px-4 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold text-xs transition-all shadow-md cursor-pointer shrink-0"
+            >
+              Aplicar a Todas
+            </button>
+            {batchAppliedMsg && (
+              <span className="text-xs font-bold text-emerald-400 animate-pulse">
+                ✓ Aplicado!
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Table Toolbar */}
       <div className="bg-[#141518] border border-[#2b2d33] rounded-t-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="relative w-full sm:w-80">
@@ -203,6 +277,8 @@ export const StepReview: React.FC<StepReviewProps> = ({
                 <th className="py-3 px-3 text-right">Valor Gasto</th>
                 <th className="py-3 px-3 text-right">Alcance</th>
                 <th className="py-3 px-3 text-right">Métrica Principal</th>
+                <th className="py-3 px-2 text-center min-w-[130px]">Filtro (Público)</th>
+                <th className="py-3 px-2 text-center min-w-[110px]">Cidade</th>
                 <th className="py-3 px-4 text-center">Ajustar Objetivo</th>
               </tr>
             </thead>
@@ -291,6 +367,30 @@ export const StepReview: React.FC<StepReviewProps> = ({
                         }
                         return <span className="text-neutral-500">—</span>;
                       })()}
+                    </td>
+
+                    {/* Filtro manual */}
+                    <td className="py-3 px-2 whitespace-nowrap">
+                      <input
+                        type="text"
+                        placeholder="Ex: Raio 5km"
+                        value={c.filtro || ''}
+                        onChange={(e) => onUpdateFiltro(c.id, e.target.value)}
+                        className="bg-[#111215] border border-[#2e3037] focus:border-amber-400 rounded px-2 py-1 text-xs text-neutral-200 w-32 focus:outline-none truncate"
+                        title="Filtro de segmentação (ex: 18 a 65 anos • Raio 5km)"
+                      />
+                    </td>
+
+                    {/* Cidade manual */}
+                    <td className="py-3 px-2 whitespace-nowrap">
+                      <input
+                        type="text"
+                        placeholder="Ex: Sua Cidade"
+                        value={c.cidade || ''}
+                        onChange={(e) => onUpdateCidade(c.id, e.target.value)}
+                        className="bg-[#111215] border border-[#2e3037] focus:border-amber-400 rounded px-2 py-1 text-xs text-neutral-200 w-28 focus:outline-none truncate"
+                        title="Cidade da campanha"
+                      />
                     </td>
 
                     {/* Selector */}

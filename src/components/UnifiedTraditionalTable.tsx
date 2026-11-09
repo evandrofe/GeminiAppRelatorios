@@ -33,6 +33,9 @@ interface UnifiedTraditionalTableProps {
   totalLinks: number;
   totalViews: number;
   totalConv: number;
+  onUpdateFiltro?: (campaignId: string, newFiltro: string) => void;
+  onUpdateCidade?: (campaignId: string, newCidade: string) => void;
+  onBatchUpdateFiltroCidade?: (filtro: string, cidade: string) => void;
 }
 
 const fmtBRL = (val: number | undefined): string => {
@@ -307,11 +310,31 @@ export const UnifiedTraditionalTable: React.FC<UnifiedTraditionalTableProps> = (
   totalInt,
   totalLinks,
   totalViews,
-  totalConv
+  totalConv,
+  onUpdateFiltro,
+  onUpdateCidade,
+  onBatchUpdateFiltroCidade
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeGuideTab, setActiveGuideTab] = useState<'all' | 'topo' | 'meio' | 'fundo' | 'setup'>('all');
   const [selectedColumn, setSelectedColumn] = useState<ColumnInfo | null>(null);
+  const [batchFiltro, setBatchFiltro] = useState('');
+  const [batchCidade, setBatchCidade] = useState('');
+  const [batchSuccess, setBatchSuccess] = useState(false);
+
+  const handleApplyBatch = () => {
+    if (!batchFiltro.trim() && !batchCidade.trim()) return;
+    if (onBatchUpdateFiltroCidade) {
+      onBatchUpdateFiltroCidade(batchFiltro.trim(), batchCidade.trim());
+    } else {
+      campaigns.forEach((c) => {
+        if (batchFiltro.trim()) onUpdateFiltro?.(c.id, batchFiltro.trim());
+        if (batchCidade.trim()) onUpdateCidade?.(c.id, batchCidade.trim());
+      });
+    }
+    setBatchSuccess(true);
+    setTimeout(() => setBatchSuccess(false), 3000);
+  };
 
   // Filter campaigns based on search query
   const filteredCampaigns = useMemo(() => {
@@ -348,10 +371,10 @@ export const UnifiedTraditionalTable: React.FC<UnifiedTraditionalTableProps> = (
           <div className="space-y-1">
             <div className="flex items-center gap-2.5 flex-wrap">
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-300 border border-amber-500/30">
-                Matriz Unificada Tradicional
+                Planilha de Custos & Métricas
               </span>
               <span className="text-[11px] text-neutral-400">
-                17 Colunas Completas Meta Ads • {campaigns.length} Ações Registradas
+                17 Colunas Oficiais Meta Ads • {campaigns.length} Ações Registradas
               </span>
             </div>
             <h3 className="text-lg sm:text-xl font-black text-white tracking-tight flex items-center gap-2">
@@ -391,6 +414,38 @@ export const UnifiedTraditionalTable: React.FC<UnifiedTraditionalTableProps> = (
               <span>Ver Guia & Legenda</span>
             </a>
           </div>
+        </div>
+
+        {/* Quick Batch Filter and Cidade in Traditional Table */}
+        <div className="p-3 bg-[#121316] border-b border-[#2b2d33] flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[10.5px] uppercase font-bold text-amber-400">Inserir Filtro & Cidade em Lote:</span>
+            <input
+              type="text"
+              placeholder="Filtro (ex: 18 a 65 anos • Raio 5km)"
+              value={batchFiltro}
+              onChange={(e) => setBatchFiltro(e.target.value)}
+              className="bg-[#181a20] border border-[#33353e] rounded-lg px-2.5 py-1 text-xs text-white placeholder-neutral-500 w-52 focus:outline-none focus:border-amber-400 transition-colors"
+            />
+            <input
+              type="text"
+              placeholder="Cidade (ex: Três Lagoas - MS)"
+              value={batchCidade}
+              onChange={(e) => setBatchCidade(e.target.value)}
+              className="bg-[#181a20] border border-[#33353e] rounded-lg px-2.5 py-1 text-xs text-white placeholder-neutral-500 w-44 focus:outline-none focus:border-amber-400 transition-colors"
+            />
+            <button
+              onClick={handleApplyBatch}
+              className="px-3 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold text-xs cursor-pointer shrink-0 transition-colors"
+            >
+              Aplicar a Todas
+            </button>
+          </div>
+          {batchSuccess && (
+            <span className="text-[11px] font-bold text-emerald-400 animate-pulse">
+              ✓ Filtro e Cidade aplicados a todas as ações!
+            </span>
+          )}
         </div>
 
         {/* The 17-Column Table */}
@@ -670,11 +725,25 @@ export const UnifiedTraditionalTable: React.FC<UnifiedTraditionalTableProps> = (
                         <td className="py-2.5 px-2 border-r border-[#23252b] text-right whitespace-nowrap font-mono text-emerald-300 bg-emerald-950/10">
                           {colCConv}
                         </td>
-                        <td className="py-2.5 px-1.5 border-r border-[#23252b] text-center text-neutral-500 text-[10px]">
-                          {r.filtro || '—'}
+                        <td className="py-2 px-1.5 border-r border-[#23252b] text-center whitespace-nowrap">
+                          <input
+                            type="text"
+                            placeholder="Filtro..."
+                            value={r.filtro || ''}
+                            onChange={(e) => onUpdateFiltro?.(r.id, e.target.value)}
+                            className="bg-[#111215] hover:bg-[#181a20] focus:bg-[#181a20] border border-transparent hover:border-[#383b44] focus:border-amber-400 rounded px-1.5 py-0.5 text-[10px] text-neutral-200 text-center w-full min-w-[85px] focus:outline-none transition-all truncate"
+                            title="Editar Filtro (público / raio)"
+                          />
                         </td>
-                        <td className="py-2.5 px-1.5 border-r border-[#23252b] text-center text-neutral-500 text-[10px]">
-                          {r.cidade || '—'}
+                        <td className="py-2 px-1.5 border-r border-[#23252b] text-center whitespace-nowrap">
+                          <input
+                            type="text"
+                            placeholder="Cidade..."
+                            value={r.cidade || ''}
+                            onChange={(e) => onUpdateCidade?.(r.id, e.target.value)}
+                            className="bg-[#111215] hover:bg-[#181a20] focus:bg-[#181a20] border border-transparent hover:border-[#383b44] focus:border-amber-400 rounded px-1.5 py-0.5 text-[10px] text-neutral-200 text-center w-full min-w-[80px] focus:outline-none transition-all truncate"
+                            title="Editar Cidade"
+                          />
                         </td>
                         <td className="py-2.5 px-2 border-b border-[#23252b] text-right whitespace-nowrap font-mono font-bold text-emerald-400 bg-emerald-950/20">
                           {colConv !== '—' ? `${colConv} conv.` : '—'}
