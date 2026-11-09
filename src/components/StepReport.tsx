@@ -35,6 +35,7 @@ import {
 } from '../lib/metaAdsParser';
 import { BudgetDonutChart } from './BudgetDonutChart';
 import { ReporteiPresentationView } from './ReporteiPresentationView';
+import { UnifiedTraditionalTable } from './UnifiedTraditionalTable';
 
 interface StepReportProps {
   meta: ReportMeta;
@@ -977,179 +978,20 @@ export const StepReport: React.FC<StepReportProps> = ({
       )}
 
       {/* ======================================================================== */}
-      {/* TAB 2: TRADITIONAL UNIFIED TABLE (17 COLUMNS) */}
+      {/* TAB 2: TRADITIONAL UNIFIED TABLE (17 COLUMNS) + DIDACTIC FUNNEL & LEGEND */}
       {/* ======================================================================== */}
       {activeTab === 'table' && (
-        <div className="space-y-6">
-          <div className="bg-white rounded-xl shadow-2xl border border-neutral-800 overflow-hidden text-neutral-950">
-            <div className="bg-[#FF9900] text-white text-center py-2.5 font-bold text-sm tracking-wider uppercase border-b border-black">
-              AÇÕES MENSAIS (MATRIZ UNIFICADA)
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-[10.5px] font-sans">
-                <thead>
-                  <tr className="bg-[#B7B7B7] text-neutral-950 font-bold uppercase tracking-tight text-[9px]">
-                    <th className="py-2.5 px-3 border-r border-b border-black text-left whitespace-nowrap min-w-[200px]">
-                      Nome da Ação
-                    </th>
-                    <th className="py-2.5 px-2 border-r border-b border-black text-center whitespace-nowrap">
-                      Formato
-                    </th>
-                    <th className="py-2.5 px-2 border-r border-b border-black text-center whitespace-nowrap">
-                      Validade
-                    </th>
-                    <th className="py-2.5 px-2 border-r border-b border-black text-center whitespace-nowrap">
-                      Investimento
-                    </th>
-                    <th className="py-2.5 px-2 border-r border-b border-black text-center whitespace-nowrap">
-                      Valor Gasto
-                    </th>
-                    <th className="py-2.5 px-2 border-r border-b border-black text-center whitespace-nowrap">
-                      Alcance
-                    </th>
-                    <th className="py-2.5 px-2 border-r border-b border-black text-center whitespace-nowrap">
-                      Engajamento
-                    </th>
-                    <th className="py-2.5 px-2 border-r border-b border-black text-center whitespace-nowrap">
-                      Cliques no Link
-                    </th>
-                    <th className="py-2.5 px-2 border-r border-b border-black text-center whitespace-nowrap">
-                      Visualização (ThruPlay)
-                    </th>
-                    <th className="py-2.5 px-2 border-r border-b border-black text-center whitespace-nowrap">
-                      Custo por 1.000 Pessoas
-                    </th>
-                    <th className="py-2.5 px-2 border-r border-b border-black text-center whitespace-nowrap">
-                      Custo por Cliques Link
-                    </th>
-                    <th className="py-2.5 px-2 border-r border-b border-black text-center whitespace-nowrap">
-                      Custo por ThruPlay
-                    </th>
-                    <th className="py-2.5 px-2 border-r border-b border-black text-center whitespace-nowrap">
-                      Custo por Interação
-                    </th>
-                    <th className="py-2.5 px-2 border-r border-b border-black text-center whitespace-nowrap">
-                      Custo por Conversa
-                    </th>
-                    <th className="py-2.5 px-1.5 border-r border-b border-black text-center whitespace-nowrap">
-                      Filtro
-                    </th>
-                    <th className="py-2.5 px-1.5 border-r border-b border-black text-center whitespace-nowrap">
-                      Cidade
-                    </th>
-                    <th className="py-2.5 px-2 border-b border-black text-center whitespace-nowrap">
-                      Conversas Iniciadas
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {campaigns.map((r, idx) => {
-                    const o = r.objective;
-                    const isReels = /^Reels/i.test(o);
-                    const curDate = extractDateFromName(r.name) || (r.sortDate ? new Date(r.sortDate) : null);
-                    const curDateKey = curDate ? curDate.getTime() : 'none';
-
-                    const showSeparator = idx > 0 && curDateKey !== lastDateKey;
-                    lastDateKey = String(curDateKey);
-
-                    const colReach = fmtNum(r.reach);
-                    const colEng =
-                      o === 'Eng' || o === 'EngLink' || o === 'TrafLink' || o === 'ReelsEng' || o === 'ReelsEngLink' || o === 'ReelsTrafLink' || o === 'ReelsEngWhats' || o === 'ReelsTrafWhats'
-                        ? fmtNum(r.eng)
-                        : '-';
-                    const colLinks =
-                      o === 'EngLink' || o === 'TrafLink' || o === 'ReelsEngLink' || o === 'ReelsTrafLink'
-                        ? fmtNum(r.links)
-                        : '-';
-                    const colViews = isReels ? fmtNum(r.views) : '-';
-                    const colCPM = o === 'Alc' ? fmtBRL(r.cpm) : '-';
-                    const colCPC =
-                      o === 'EngLink' || o === 'TrafLink' || o === 'ReelsEngLink' || o === 'ReelsTrafLink'
-                        ? fmtBRL(r.cpc)
-                        : '-';
-                    const colThru =
-                      o === 'ReelsAlc' || o === 'ReelsEng' || o === 'ReelsEngLink' || o === 'ReelsTrafLink'
-                        ? fmtBRL(r.cThru)
-                        : '-';
-                    const colCInt = o === 'Eng' || o === 'ReelsEng' ? fmtBRL(r.cInt) : '-';
-                    const colCConv =
-                      o === 'EngWhats' || o === 'TrafWhats' || o === 'ReelsEngWhats' || o === 'ReelsTrafWhats'
-                        ? fmtBRL(r.cConv)
-                        : '-';
-                    const colConv =
-                      o === 'EngWhats' || o === 'TrafWhats' || o === 'ReelsEngWhats' || o === 'ReelsTrafWhats'
-                        ? fmtNum(r.conv)
-                        : '-';
-
-                    return (
-                      <React.Fragment key={r.id}>
-                        {showSeparator && (
-                          <tr className="bg-neutral-100 border-y border-neutral-300 h-3">
-                            <td colSpan={17} className="h-3 p-0" />
-                          </tr>
-                        )}
-                        <tr className="hover:bg-amber-50/40 transition-colors">
-                          <td className="py-2 px-3 border-r border-b border-neutral-200 text-left font-medium">
-                            {titleCase(r.displayName || r.name)}
-                          </td>
-                          <td className="py-2 px-2 border-r border-b border-neutral-200 text-center whitespace-nowrap text-neutral-700">
-                            {r.format}
-                          </td>
-                          <td className="py-2 px-2 border-r border-b border-neutral-200 text-center whitespace-nowrap text-neutral-600">
-                            {r.validity || '-'}
-                          </td>
-                          <td className="py-2 px-2 border-r border-b border-neutral-200 text-center whitespace-nowrap">
-                            {fmtBRL(r.budget)}
-                          </td>
-                          <td className="py-2 px-2 border-r border-b border-neutral-200 text-center whitespace-nowrap font-bold text-neutral-900">
-                            {fmtBRL(r.spent)}
-                          </td>
-                          <td className="py-2 px-2 border-r border-b border-neutral-200 text-center whitespace-nowrap">
-                            {colReach}
-                          </td>
-                          <td className="py-2 px-2 border-r border-b border-neutral-200 text-center whitespace-nowrap">
-                            {colEng}
-                          </td>
-                          <td className="py-2 px-2 border-r border-b border-neutral-200 text-center whitespace-nowrap">
-                            {colLinks}
-                          </td>
-                          <td className="py-2 px-2 border-r border-b border-neutral-200 text-center whitespace-nowrap">
-                            {colViews}
-                          </td>
-                          <td className="py-2 px-2 border-r border-b border-neutral-200 text-center whitespace-nowrap">
-                            {colCPM}
-                          </td>
-                          <td className="py-2 px-2 border-r border-b border-neutral-200 text-center whitespace-nowrap">
-                            {colCPC}
-                          </td>
-                          <td className="py-2 px-2 border-r border-b border-neutral-200 text-center whitespace-nowrap">
-                            {colThru}
-                          </td>
-                          <td className="py-2 px-2 border-r border-b border-neutral-200 text-center whitespace-nowrap">
-                            {colCInt}
-                          </td>
-                          <td className="py-2 px-2 border-r border-b border-neutral-200 text-center whitespace-nowrap">
-                            {colCConv}
-                          </td>
-                          <td className="py-2 px-1.5 border-r border-b border-neutral-200 text-center text-neutral-400">
-                            -
-                          </td>
-                          <td className="py-2 px-1.5 border-r border-b border-neutral-200 text-center text-neutral-400">
-                            -
-                          </td>
-                          <td className="py-2 px-2 border-b border-neutral-200 text-center whitespace-nowrap font-bold text-emerald-700">
-                            {colConv}
-                          </td>
-                        </tr>
-                      </React.Fragment>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+        <UnifiedTraditionalTable
+          campaigns={campaigns}
+          meta={meta}
+          totalBudget={totalBudget}
+          totalSpent={totalSpent}
+          totalReach={totalReach}
+          totalInt={totalInt}
+          totalLinks={totalLinks}
+          totalViews={totalViews}
+          totalConv={totalConv}
+        />
       )}
 
       {/* ======================================================================== */}
